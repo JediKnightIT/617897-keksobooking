@@ -66,3 +66,9 @@ var realEstateData = {
     "http://o0.github.io/assets/images/tokyo/hotel3.jpg"
   ]
 };
+
+// Функция для получения пути к расположению аватарок
+var getAvatarPath = function (number) {
+  var numberAvatar = number > 9 ? number : '0' + number;
+  return authorData.AVATARS + numberAvatar + '.png';
+};
