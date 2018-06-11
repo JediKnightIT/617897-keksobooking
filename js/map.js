@@ -77,3 +77,8 @@ var getAvatarPath = function (number) {
 var getRandomArrayElement = function (arr) {
   return arr[Math.floor((Math.random() * arr.length))];
 };
+
+// Функция, возвращающая случайное целое число между min и max
+var getRandomNumberElement = function (min, max) {
+  return Math.floor(Math.random() * (min - max) + min);
+};
