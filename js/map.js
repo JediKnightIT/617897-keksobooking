@@ -67,8 +67,13 @@ var realEstateData = {
   ]
 };
 
-// Функция для получения пути к расположению аватарок
+// Функция, возвращающая путь к расположению аватара
 var getAvatarPath = function (number) {
   var numberAvatar = number > 9 ? number : '0' + number;
   return authorData.AVATARS + numberAvatar + '.png';
+};
+
+// Функция, возвращающая случайный элемент из массива
+var getRandomArrayElement = function (arr) {
+  return arr[Math.floor((Math.random() * arr.length))];
 };
