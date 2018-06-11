@@ -1,6 +1,8 @@
 'use strict';
 
 // Создаём данные
+var ADS_QUANTITY = 8;
+
 var authorData = {
   AVATARS: 'img/avatars/user'
 };
