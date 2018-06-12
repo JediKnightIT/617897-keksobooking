@@ -74,11 +74,22 @@ var getAvatarPath = function (number) {
 };
 
 // Функция, возвращающая случайный элемент из массива
-var getRandomArrayElement = function (arr) {
-  return arr[Math.floor((Math.random() * arr.length))];
+var getRandomArrayElement = function (array) {
+  return array[Math.floor((Math.random() * array.length))];
 };
 
 // Функция, возвращающая случайное целое число между min и max
 var getRandomNumberElement = function (min, max) {
   return Math.floor(Math.random() * (min - max) + min);
+};
+
+// Функция, возвращающая случайный элемент в перетасованном массиве
+function getShuffleArrayElement (array) {
+  for (var i = array.length - 1; i > 0; i--) {
+    var randomIndex = Math.floor(Math.random() * (i + 1));
+    var temporaryValue = array[i];
+    array[i] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+  return array;
 };
