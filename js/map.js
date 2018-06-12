@@ -8,7 +8,7 @@ var authorData = {
 };
 
 var realEstateData = {
-  locationAddress: {
+  location: {
     X_MIN: 300,
     X_MAX: 900,
     Y_MIN: 130,
@@ -93,3 +93,7 @@ function getShuffleArrayElement (array) {
   }
   return array;
 };
+
+// Присваиваем переменным location сгенерированные координаты месторасположения недвижимости
+var locationX = getRandomNumberElement(realEstateData.location.X_MIN,realEstateData.location.X_MAX);
+var locationY = getRandomNumberElement(realEstateData.location.Y_MIN,realEstateData.location.Y_MAX);
