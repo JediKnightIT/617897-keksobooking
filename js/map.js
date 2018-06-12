@@ -78,8 +78,10 @@ var map = document.querySelector('.map');
 var mapPinTemplate = document.querySelector('template')
     .content.querySelector('.map__pin');
 
-var mapCardTemplate = document.querySelector('template')
-    .content.querySelector('.map__card');
+var similarPinElement = map.querySelector('.map__pins');
+
+// var mapCardTemplate = map.querySelector('template')
+//     .content.querySelector('.map__card');
 
 // Функция, возвращающая путь к расположению аватара
 var getAvatarPath = function (number) {
@@ -105,6 +107,7 @@ var getShuffleArrayElement = function (array) {
     array[i] = array[randomIndex];
     array[randomIndex] = temporaryValue;
   }
+
   return array;
 };
 
@@ -153,6 +156,7 @@ var getRealEstateAds = function () {
   for (var i = 0; i < ADS_QUANTITY; i++) {
     realEstateAds.push(getDataObjectRealEstate(i));
   }
+
   return realEstateAds;
 };
 
@@ -170,4 +174,13 @@ var renderPinElement = function (data) {
   pinElementImage.alt = data.offer.title;
 
   return pinElement;
+};
+
+// Функция, отрисовывающая сгенерированные DOM-элементы меток на карте
+var getRenderPinElement = function (realEstateAds) {
+  var fragment = document.createDocumentFragment();
+  realEstateAds.forEach(function (item) {
+    fragment.appendChild(renderPinElement(item));
+  });
+  similarPinElement.appendChild(fragment);
 };
