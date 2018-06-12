@@ -67,6 +67,20 @@ var realEstateData = {
   ]
 };
 
+var pinConfig = {
+  WIDTH: 50,
+  HEIGHT: 70
+};
+
+// Находим элементы в разметке и присваиваем их переменным
+var map = document.querySelector('.map');
+
+var mapPinTemplate = document.querySelector('template')
+    .content.querySelector('.map__pin');
+
+var mapCardTemplate = document.querySelector('template')
+    .content.querySelector('.map__card');
+
 // Функция, возвращающая путь к расположению аватара
 var getAvatarPath = function (number) {
   var numberAvatar = number > 9 ? number : '0' + number;
@@ -140,4 +154,20 @@ var getRealEstateAds = function () {
     realEstateAds.push(getDataObjectRealEstate(i));
   }
   return realEstateAds;
+};
+
+// Временно удаляем класс
+map.classList.remove('map--faded');
+
+// Функция, создающая DOM-элементы, соответствующие меткам на карте
+var renderPinElement = function (data) {
+  var pinElement = mapPinTemplate.cloneNode(true);
+  var pinElementImage = pinElement.querySelector('img');
+
+  pinElement.style.left = (data.location.x - pinConfig.WIDTH / 2) + 'px';
+  pinElement.style.top = (data.location.y - pinConfig.HEIGHT) + 'px';
+  pinElementImage.src = data.author.avatar;
+  pinElementImage.alt = data.offer.title;
+
+  return pinElement;
 };
