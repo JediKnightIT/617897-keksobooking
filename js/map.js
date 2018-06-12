@@ -132,3 +132,12 @@ var getDataObjectRealEstate = function (index) {
     }
   };
 };
+
+// Функция, возвращающая массив из n сгенерированных объектов. Объявления о сдаче недвижимости
+var getRealEstateAds = function () {
+  var realEstateAds = [];
+  for (var i = 0; i < ADS_QUANTITY; i++) {
+    realEstateAds.push(getDataObjectRealEstate(i));
+  }
+  return realEstateAds;
+};
