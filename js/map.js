@@ -52,7 +52,7 @@ var realEstateData = {
     '13:00',
     '14:00'
   ],
-  FACILITIES: [
+  FEATURES: [
     'wifi',
     'dishwasher',
     'parking',
@@ -72,6 +72,20 @@ var pinConfig = {
   HEIGHT: 70
 };
 
+var translationRealEstateTypes = {
+  palace: 'Дворец',
+  flat: 'Квартира',
+  house: 'Дом',
+  bungalo: 'Бунгало'
+};
+
+var photoElementConfig = {
+  CLASS: 'popup__photo',
+  WIDTH: 45,
+  HEIGHT: 40,
+  ALT: 'Фотография жилья'
+};
+
 // Находим элементы в разметке и присваиваем их переменным
 var map = document.querySelector('.map');
 
@@ -80,8 +94,10 @@ var mapPinTemplate = document.querySelector('template')
 
 var similarPinElement = map.querySelector('.map__pins');
 
-// var mapCardTemplate = map.querySelector('template')
-//     .content.querySelector('.map__card');
+var adTemplate = document.querySelector('template')
+    .content.querySelector('.map__card');
+
+var similarAdElement = map.querySelector('.map');
 
 // Функция, возвращающая путь к расположению аватара
 var getAvatarPath = function (number) {
@@ -117,7 +133,7 @@ var locationY = getRandomNumberElement(realEstateData.location.Y_MIN, realEstate
 
 // Функция, возвращающая массив строк случайной длины
 var getArrayStringsRandomLength = function () {
-  var shuffleArray = getShuffleArrayElement(realEstateData.FACILITIES);
+  var shuffleArray = getShuffleArrayElement(realEstateData.FEATURES);
   var randomIndex = getRandomArrayElement(shuffleArray);
   var arrayCopy = shuffleArray.slice(0, randomIndex);
 
@@ -164,14 +180,14 @@ var getRealEstateAds = function () {
 map.classList.remove('map--faded');
 
 // Функция, создающая DOM-элементы, соответствующие меткам на карте
-var renderPinElement = function (data) {
+var createPinElement = function (object) {
   var pinElement = mapPinTemplate.cloneNode(true);
   var pinElementImage = pinElement.querySelector('img');
 
-  pinElement.style.left = (data.location.x - pinConfig.WIDTH / 2) + 'px';
-  pinElement.style.top = (data.location.y - pinConfig.HEIGHT) + 'px';
-  pinElementImage.src = data.author.avatar;
-  pinElementImage.alt = data.offer.title;
+  pinElement.style.left = (object.location.x - pinConfig.WIDTH / 2) + 'px';
+  pinElement.style.top = (object.location.y - pinConfig.HEIGHT) + 'px';
+  pinElementImage.src = object.author.avatar;
+  pinElementImage.alt = object.offer.title;
 
   return pinElement;
 };
@@ -180,7 +196,53 @@ var renderPinElement = function (data) {
 var getRenderPinElement = function (realEstateAds) {
   var fragment = document.createDocumentFragment();
   realEstateAds.forEach(function (item) {
-    fragment.appendChild(renderPinElement(item));
+    fragment.appendChild(createPinElement(item));
   });
   similarPinElement.appendChild(fragment);
 };
+
+// Функция, возвращающая новый DOM узел (элемент списка)
+var createFeatureElement = function (nameFeature) {
+  var newFeatureElement = document.createElement('li');
+  newFeatureElement.classList.add('popup__feature ' + 'popup__feature--' + nameFeature);
+
+  return newFeatureElement;
+};
+
+// Функция, возвращающая новый DOM узел (изображение)
+var createPhotoElement = function (pathPhoto) {
+  var newPhotoElement = document.createElement('img');
+  newPhotoElement.classList.add(photoElementConfig.CLASS);
+  newPhotoElement.scr = pathPhoto;
+  newPhotoElement.style.width = photoElementConfig.WIDTH + 'px';
+  newPhotoElement.style.height = photoElementConfig.HEIGHT + 'px';
+  newPhotoElement.alt = photoElementConfig.ALT;
+
+  return newPhotoElement;
+};
+
+// Функция, создающая DOM-элементы, соответствующие объявлениям о недвижимости
+var createAdElement = function (object) {
+  var adElement = adTemplate.cloneNode(true);
+  adElement.querySelector('.popup__title').textContent = object.offer.title;
+  adElement.querySelector('.popup__text--address').textContent = object.offer.address;
+  adElement.querySelector('.popup__text--price').textContent = object.offer.price + 'U+20BD/ночь';
+  adElement.querySelector('.popup__type').textContent = translationRealEstateTypes[object.offer.type];
+  adElement.querySelector('.popup__text--capacity').textContent = object.offer.rooms + ' комнаты для ' + object.offer.guests + ' гостей';
+  adElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + object.offer.checkin + ',' + ' выезд до ' + object.offer.checkout;
+
+  for (var i = 0; i < object.offer.features.length; i++) {
+    adElement.querySelector('.popup__features').appendChild(createFeatureElement(i));
+  }
+
+  adElement.querySelector('.popup__description').textContent = object.offer.description;
+
+  for (var j = 0; j < object.offer.photos.length; j++) {
+    adElement.querySelector('.popup__photos').appendChild(createPhotoElement(j));
+  }
+
+  adElement.querySelector('.popup__avatar').src = object.author.avatar;
+
+  return adElement;
+};
+
