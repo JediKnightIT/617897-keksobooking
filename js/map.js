@@ -99,6 +99,9 @@ var adTemplate = document.querySelector('template')
 
 var similarAdElement = map.querySelector('.map');
 
+var mapFiltersContainer = map.querySelector('.map__filters-container');
+
+
 // Функция, возвращающая путь к расположению аватара
 var getAvatarPath = function (number) {
   var numberAvatar = number > 9 ? number : '0' + number;
@@ -176,9 +179,6 @@ var getRealEstateAds = function () {
   return realEstateAds;
 };
 
-// Временно удаляем класс
-map.classList.remove('map--faded');
-
 // Функция, создающая DOM-элементы, соответствующие меткам на карте
 var createPinElement = function (object) {
   var pinElement = mapPinTemplate.cloneNode(true);
@@ -198,7 +198,8 @@ var getRenderPinElement = function (realEstateAds) {
   realEstateAds.forEach(function (item) {
     fragment.appendChild(createPinElement(item));
   });
-  similarPinElement.appendChild(fragment);
+
+  return fragment;
 };
 
 // Функция, возвращающая новый DOM узел (элемент списка)
@@ -246,3 +247,26 @@ var createAdElement = function (object) {
   return adElement;
 };
 
+// Функция, отрисовывающая сгенерированные DOM-элемент объявления
+var getRenderAdElement = function (realEstateAds) {
+  var fragment = document.createDocumentFragment();
+  realEstateAds.forEach(function (item) {
+    fragment.appendChild(createAdElement(item));
+  });
+
+  return fragment;
+};
+
+// Функция, запускающая активный режим и отрисовывающая метки и объявления о недвижимости
+var startActiveMode = function () {
+  // Временно удаляем класс
+  map.classList.remove('map--faded');
+
+  var RealEstateAds = getRealEstateAds(ADS_QUANTITY);
+
+  similarPinElement.appendChild(getRenderPinElement(RealEstateAds));
+  similarAdElement.insertBefore(getRenderAdElement(RealEstateAds[0]), mapFiltersContainer);
+
+};
+
+startActiveMode();
