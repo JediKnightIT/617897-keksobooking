@@ -190,7 +190,7 @@ var createFeatureElement = function (modifier) {
 var createPhotoElement = function (pathPhoto) {
   var newPhotoElement = document.createElement('img');
   newPhotoElement.classList.add(photoElementConfig.CLASS);
-  newPhotoElement.scr = pathPhoto;
+  newPhotoElement.src = pathPhoto;
   newPhotoElement.style.width = photoElementConfig.WIDTH + 'px';
   newPhotoElement.style.height = photoElementConfig.HEIGHT + 'px';
   newPhotoElement.alt = photoElementConfig.ALT;
