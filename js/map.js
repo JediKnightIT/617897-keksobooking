@@ -42,12 +42,7 @@ var realEstateData = {
     'house',
     'bungalo'
   ],
-  CHECKIN: [
-    '12:00',
-    '13:00',
-    '14:00'
-  ],
-  CHECKOUT: [
+  CHECKIN_CHECKOUT: [
     '12:00',
     '13:00',
     '14:00'
@@ -88,19 +83,17 @@ var photoElementConfig = {
 
 // Находим элементы в разметке и присваиваем их переменным
 var map = document.querySelector('.map');
+map.classList.remove('map--faded');
 
-var mapPinTemplate = document.querySelector('template')
-    .content.querySelector('.map__pin');
+var template = document.querySelector('template');
 
-var similarPinElement = map.querySelector('.map__pins');
+var mapPinTemplate = template.content.querySelector('.map__pin');
 
-var adTemplate = document.querySelector('template')
-    .content.querySelector('.map__card');
+var similarPinElement = document.querySelector('.map__pins');
 
-var similarAdElement = map.querySelector('.map');
+var adTemplate = template.content.querySelector('.map__card');
 
-var mapFiltersContainer = map.querySelector('.map__filters-container');
-
+var similarAdElement = document.querySelector('.map__filters-container');
 
 // Функция, возвращающая путь к расположению аватара
 var getAvatarPath = function (number) {
@@ -108,59 +101,44 @@ var getAvatarPath = function (number) {
   return authorData.AVATARS + numberAvatar + '.png';
 };
 
+// Функция, возвращающая случайное целое число от min(включено) до max(включено).
+var getRandomIntegerElement = function (min, max) {
+  return min + Math.floor(Math.random() * (max + 1 - min));
+};
+
 // Функция, возвращающая случайный элемент из массива
 var getRandomArrayElement = function (array) {
   return array[Math.floor((Math.random() * array.length))];
 };
 
-// Функция, возвращающая случайное целое число между min и max
-var getRandomNumberElement = function (min, max) {
-  return Math.floor(Math.random() * (min - max) + min);
-};
-
-// Функция, возвращающая случайный элемент в перетасованном массиве
-var getShuffleArrayElement = function (array) {
-  for (var i = array.length - 1; i > 0; i--) {
-    var randomIndex = Math.floor(Math.random() * (i + 1));
-    var temporaryValue = array[i];
-    array[i] = array[randomIndex];
-    array[randomIndex] = temporaryValue;
-  }
-
-  return array;
-};
-
-// Присваиваем переменным location сгенерированные координаты месторасположения недвижимости
-var locationX = getRandomNumberElement(realEstateData.location.X_MIN, realEstateData.location.X_MAX);
-var locationY = getRandomNumberElement(realEstateData.location.Y_MIN, realEstateData.location.Y_MAX);
-
-// Функция, возвращающая массив строк случайной длины
-var getArrayStringsRandomLength = function () {
-  var shuffleArray = getShuffleArrayElement(realEstateData.FEATURES);
-  var randomIndex = getRandomArrayElement(shuffleArray);
-  var arrayCopy = shuffleArray.slice(0, randomIndex);
-
-  return arrayCopy;
+// Функция, возвращающая случайную длину массива
+var getArrayStringsRandomLength = function (array) {
+  return array.slice(getRandomIntegerElement(0, array.length));
 };
 
 // Функция, возвращающая сгенерированные данные объекта недвижимости
 var getDataObjectRealEstate = function (index) {
+
+// Присваиваем переменным location сгенерированные координаты месторасположения недвижимости
+  var locationX = getRandomIntegerElement(realEstateData.location.X_MIN, realEstateData.location.X_MAX);
+  var locationY = getRandomIntegerElement(realEstateData.location.Y_MIN, realEstateData.location.Y_MAX);
+
   return {
     author: {
-      avatar: getAvatarPath(++index)
+      avatar: getAvatarPath(index + 1)
     },
     offer: {
       title: realEstateData.TITLES[index],
       address: locationX + ', ' + locationY,
-      price: getRandomNumberElement(realEstateData.price.MIN, realEstateData.price.MAX),
+      price: getRandomIntegerElement(realEstateData.price.MIN, realEstateData.price.MAX),
       type: getRandomArrayElement(realEstateData.TYPES),
-      rooms: getRandomNumberElement(realEstateData.rooms.MIN, realEstateData.rooms.MAX),
-      guests: getRandomNumberElement(realEstateData.guests.MIN, realEstateData.guests.MAX),
-      checkin: getRandomArrayElement(realEstateData.CHECKIN),
-      checkout: getRandomArrayElement(realEstateData.CHECKOUT),
-      features: getArrayStringsRandomLength(),
+      rooms: getRandomIntegerElement(realEstateData.rooms.MIN, realEstateData.rooms.MAX),
+      guests: getRandomIntegerElement(realEstateData.guests.MIN, realEstateData.guests.MAX),
+      checkin: getRandomArrayElement(realEstateData.CHECKIN_CHECKOUT),
+      checkout: getRandomArrayElement(realEstateData.CHECKIN_CHECKOUT),
+      features: getArrayStringsRandomLength(realEstateData.FEATURES),
       description: '',
-      photos: getShuffleArrayElement(realEstateData.PHOTOS)
+      photos: realEstateData.PHOTOS
     },
     location: {
       x: locationX,
@@ -169,7 +147,7 @@ var getDataObjectRealEstate = function (index) {
   };
 };
 
-// Функция, возвращающая массив из n сгенерированных объектов. Объявления о сдаче недвижимости
+// Функция, возвращающая массив из n сгенерированных объектов. Массив из 8 объявлений о сдаче недвижимости
 var getRealEstateAds = function () {
   var realEstateAds = [];
   for (var i = 0; i < ADS_QUANTITY; i++) {
@@ -179,23 +157,21 @@ var getRealEstateAds = function () {
   return realEstateAds;
 };
 
-// Функция, создающая DOM-элементы, соответствующие меткам на карте
-var createPinElement = function (object) {
+// Функция, создающая DOM-элемент, соответствующиЙ меткам на карте
+var createPinElement = function (pin) {
   var pinElement = mapPinTemplate.cloneNode(true);
-  var pinElementImage = pinElement.querySelector('img');
 
-  pinElement.style.left = (object.location.x - pinConfig.WIDTH / 2) + 'px';
-  pinElement.style.top = (object.location.y - pinConfig.HEIGHT) + 'px';
-  pinElementImage.src = object.author.avatar;
-  pinElementImage.alt = object.offer.title;
+  pinElement.style = 'left: ' + (pin.location.x - pinConfig.WIDTH / 2) + 'px; top: ' + (pin.location.y - pinConfig.HEIGHT) + 'px';
+  pinElement.querySelector('img').src = pin.author.avatar;
+  pinElement.querySelector('img').alt = pin.offer.title;
 
   return pinElement;
 };
 
-// Функция, отрисовывающая сгенерированные DOM-элементы меток на карте
-var getRenderPinElement = function (realEstateAds) {
+// Функция, отрисовывающая сгенерированный DOM-элемент меток на карте
+var getRenderPinElement = function (pins) {
   var fragment = document.createDocumentFragment();
-  realEstateAds.forEach(function (item) {
+  pins.forEach(function (item) {
     fragment.appendChild(createPinElement(item));
   });
 
@@ -203,9 +179,9 @@ var getRenderPinElement = function (realEstateAds) {
 };
 
 // Функция, возвращающая новый DOM узел (элемент списка)
-var createFeatureElement = function (nameFeature) {
+var createFeatureElement = function (modifier) {
   var newFeatureElement = document.createElement('li');
-  newFeatureElement.classList.add('popup__feature ' + 'popup__feature--' + nameFeature);
+  newFeatureElement.classList.add('popup__feature', 'popup__feature--' + modifier);
 
   return newFeatureElement;
 };
@@ -222,51 +198,39 @@ var createPhotoElement = function (pathPhoto) {
   return newPhotoElement;
 };
 
-// Функция, создающая DOM-элементы, соответствующие объявлениям о недвижимости
-var createAdElement = function (object) {
+// Функция, создающая DOM-элемент, соответствующий объявлениям о недвижимости
+var createAdElement = function (ad) {
   var adElement = adTemplate.cloneNode(true);
-  adElement.querySelector('.popup__title').textContent = object.offer.title;
-  adElement.querySelector('.popup__text--address').textContent = object.offer.address;
-  adElement.querySelector('.popup__text--price').textContent = object.offer.price + 'U+20BD/ночь';
-  adElement.querySelector('.popup__type').textContent = translationRealEstateTypes[object.offer.type];
-  adElement.querySelector('.popup__text--capacity').textContent = object.offer.rooms + ' комнаты для ' + object.offer.guests + ' гостей';
-  adElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + object.offer.checkin + ',' + ' выезд до ' + object.offer.checkout;
 
-  for (var i = 0; i < object.offer.features.length; i++) {
-    adElement.querySelector('.popup__features').appendChild(createFeatureElement(i));
-  }
+  adElement.querySelector('.popup__title').textContent = ad.offer.title;
+  adElement.querySelector('.popup__text--address').textContent = ad.offer.address;
+  adElement.querySelector('.popup__text--price').textContent = ad.offer.price + '₽/ночь';
+  adElement.querySelector('.popup__type').textContent = translationRealEstateTypes[ad.offer.type];
+  adElement.querySelector('.popup__text--capacity').textContent = ad.offer.rooms + ' комнаты для ' + ad.offer.guests + ' гостей';
+  adElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + ad.offer.checkin + ', выезд до ' + ad.offer.checkout;
 
-  adElement.querySelector('.popup__description').textContent = object.offer.description;
+  ad.offer.features.forEach(function (item) {
+    adElement.querySelector('.popup__features').appendChild(createFeatureElement(item));
+  });
 
-  for (var j = 0; j < object.offer.photos.length; j++) {
-    adElement.querySelector('.popup__photos').appendChild(createPhotoElement(j));
-  }
+  adElement.querySelector('.popup__description').textContent = ad.offer.description;
 
-  adElement.querySelector('.popup__avatar').src = object.author.avatar;
+  ad.offer.photos.forEach(function (item) {
+    adElement.querySelector('.popup__photos').appendChild(createPhotoElement(item));
+  });
+
+  adElement.querySelector('.popup__avatar').src = ad.author.avatar;
 
   return adElement;
 };
 
-// Функция, отрисовывающая сгенерированные DOM-элемент объявления
-var getRenderAdElement = function (realEstateAds) {
-  var fragment = document.createDocumentFragment();
-  realEstateAds.forEach(function (item) {
-    fragment.appendChild(createAdElement(item));
-  });
-
-  return fragment;
-};
-
-// Функция, запускающая активный режим и отрисовывающая метки и объявления о недвижимости
+// Функция, создающая DOM-элементы меток и объявлений о сдаче недвижимости
 var startActiveMode = function () {
-  // Временно удаляем класс
-  map.classList.remove('map--faded');
-
-  var RealEstateAds = getRealEstateAds(ADS_QUANTITY);
+  var RealEstateAds = getRealEstateAds();
 
   similarPinElement.appendChild(getRenderPinElement(RealEstateAds));
-  similarAdElement.insertBefore(getRenderAdElement(RealEstateAds[0]), mapFiltersContainer);
 
+  map.insertBefore(createAdElement(RealEstateAds[0]), similarAdElement);
 };
 
 startActiveMode();
