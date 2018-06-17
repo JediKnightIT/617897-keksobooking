@@ -178,6 +178,13 @@ var getRenderPinElement = function (pins) {
   return fragment;
 };
 
+// Функция, удаляющая все дочерние элементы
+var removeChildElements = function (element) {
+  while (element.firstChild) {
+    element.removeChild(element.firstChild);
+  }
+};
+
 // Функция, возвращающая новый DOM узел (элемент списка)
 var createFeatureElement = function (modifier) {
   var newFeatureElement = document.createElement('li');
@@ -209,14 +216,20 @@ var createAdElement = function (ad) {
   adElement.querySelector('.popup__text--capacity').textContent = ad.offer.rooms + ' комнаты для ' + ad.offer.guests + ' гостей';
   adElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + ad.offer.checkin + ', выезд до ' + ad.offer.checkout;
 
+  var featureParent = adElement.querySelector('.popup__features');
+  removeChildElements(featureParent);
+
   ad.offer.features.forEach(function (item) {
-    adElement.querySelector('.popup__features').appendChild(createFeatureElement(item));
+    featureParent.appendChild(createFeatureElement(item));
   });
 
   adElement.querySelector('.popup__description').textContent = ad.offer.description;
 
+  var photoParent = adElement.querySelector('.popup__photos');
+  removeChildElements(photoParent);
+
   ad.offer.photos.forEach(function (item) {
-    adElement.querySelector('.popup__photos').appendChild(createPhotoElement(item));
+    photoParent.appendChild(createPhotoElement(item));
   });
 
   adElement.querySelector('.popup__avatar').src = ad.author.avatar;
@@ -226,11 +239,11 @@ var createAdElement = function (ad) {
 
 // Функция, создающая DOM-элементы меток и объявлений о сдаче недвижимости
 var startActiveMode = function () {
-  var RealEstateAds = getRealEstateAds();
+  var realEstateAds = getRealEstateAds();
 
-  similarPinElement.appendChild(getRenderPinElement(RealEstateAds));
+  similarPinElement.appendChild(getRenderPinElement(realEstateAds));
 
-  map.insertBefore(createAdElement(RealEstateAds[0]), similarAdElement);
+  map.insertBefore(createAdElement(realEstateAds[0]), similarAdElement);
 };
 
 startActiveMode();
