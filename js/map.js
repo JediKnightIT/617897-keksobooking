@@ -260,6 +260,8 @@ getDisabledFieldset(disabledFieldset);
 var startActiveMode = function () {
   map.classList.remove('map--faded');
 
+  getEnabledieldset(disabledFieldset);
+
   var realEstateAds = getRealEstateAds();
 
   similarPinElement.appendChild(getRenderPinElement(realEstateAds));
@@ -267,3 +269,10 @@ var startActiveMode = function () {
   map.insertBefore(createAdElement(realEstateAds[0]), similarAdElement);
 };
 
+// Находим класс главного пина map__pin--main
+var mapPinMain = map.querySelector('.map__pin--main');
+
+// Добавляем обработчик события mouseup на элемент .map__pin--main, тем самым переводим страницу в активное состояние
+mapPinMain.addEventListener('mouseup', function () {
+  startActiveMode();
+});
