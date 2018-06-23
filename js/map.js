@@ -83,7 +83,6 @@ var photoElementConfig = {
 
 // Находим элементы в разметке и присваиваем их переменным
 var map = document.querySelector('.map');
-map.classList.remove('map--faded');
 
 var template = document.querySelector('template');
 
@@ -237,8 +236,30 @@ var createAdElement = function (ad) {
   return adElement;
 };
 
-// Функция, создающая DOM-элементы меток и объявлений о сдаче недвижимости
+// Блокируем поля формы .ad-form, добавляя атрибут disabled на их родительские блоки fieldset
+// Находим родительские блоки fieldset
+var disabledFieldset = map.querySelector('fieldset');
+
+// Добавляем тегам fieldset атрибут disabled
+var getDisabledFieldset = function (fieldset) {
+  for (var i = 0; i < fieldset.length; i++) {
+    fieldset[i].disabled = true;
+  }
+};
+
+// Убираем у тегов fieldset атрибут disabled
+var getEnabledieldset = function (fieldset) {
+  for (var i = 0; i < fieldset.length; i++) {
+    fieldset[i].disabled = false;
+  }
+};
+
+getDisabledFieldset(disabledFieldset);
+
+// Функция, переводящая страницу в активное состояние, создающая DOM-элементы меток и объявлений о сдаче недвижимости
 var startActiveMode = function () {
+  map.classList.remove('map--faded');
+
   var realEstateAds = getRealEstateAds();
 
   similarPinElement.appendChild(getRenderPinElement(realEstateAds));
@@ -246,4 +267,3 @@ var startActiveMode = function () {
   map.insertBefore(createAdElement(realEstateAds[0]), similarAdElement);
 };
 
-startActiveMode();
