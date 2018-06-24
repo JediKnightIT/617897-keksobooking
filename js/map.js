@@ -94,6 +94,8 @@ var adTemplate = template.content.querySelector('.map__card');
 
 var similarAdElement = document.querySelector('.map__filters-container');
 
+var pageActive;
+
 // Функция, возвращающая путь к расположению аватара
 var getAvatarPath = function (number) {
   var numberAvatar = number > 9 ? number : '0' + number;
@@ -164,6 +166,10 @@ var createPinElement = function (pin) {
   pinElement.querySelector('img').src = pin.author.avatar;
   pinElement.querySelector('img').alt = pin.offer.title;
 
+  pinElement.addEventListener('click', function () {
+    showAds();
+  });
+
   return pinElement;
 };
 
@@ -207,6 +213,7 @@ var createPhotoElement = function (pathPhoto) {
 // Функция, создающая DOM-элемент, соответствующий объявлениям о недвижимости
 var createAdElement = function (ad) {
   var adElement = adTemplate.cloneNode(true);
+  var adClose = adElement.querySelector('.popup__close');
 
   adElement.querySelector('.popup__title').textContent = ad.offer.title;
   adElement.querySelector('.popup__text--address').textContent = ad.offer.address;
@@ -233,14 +240,19 @@ var createAdElement = function (ad) {
 
   adElement.querySelector('.popup__avatar').src = ad.author.avatar;
 
+  adClose.addEventListener('click', function () {
+    hideAds();
+  });
+
   return adElement;
 };
 
 // ===============================================================================================
 // Блокируем поля формы .ad-form, добавляя атрибут disabled на их родительские блоки fieldset
-// Находим родительские блоки fieldset
-var disabledFieldset = map.querySelectorAll('fieldset');
-var adForm = document.querySelector('.ad-form'); // Если вместо document поставить map работать не будет. Не понятно почему, ведь элемент с классом ad-form находиться внутри map
+// Находим родительские блоки fieldset и записываем значение в переменную
+var disabledFieldset = document.querySelectorAll('fieldset');
+// Находим форму и записываем значение в переменную
+var adForm = document.querySelector('.ad-form');
 
 // Добавляем тегам fieldset атрибут disabled
 var getDisabledFieldset = function (fieldset) {
@@ -258,6 +270,9 @@ var getEnabledieldset = function (fieldset) {
 
 getDisabledFieldset(disabledFieldset);
 
+// Присваиваем значение функции (функция генерирует 8 объявлений) переменной
+var realEstateAds = getRealEstateAds();
+
 // Функция, переводящая страницу в активное состояние, создающая DOM-элементы меток и объявлений о сдаче недвижимости
 var startActiveMode = function () {
   map.classList.remove('map--faded');
@@ -265,11 +280,7 @@ var startActiveMode = function () {
 
   getEnabledieldset(disabledFieldset);
 
-  var realEstateAds = getRealEstateAds();
-
   similarPinElement.appendChild(getRenderPinElement(realEstateAds));
-
-  map.insertBefore(createAdElement(realEstateAds[0]), similarAdElement);
 };
 
 // Находим класс главного пина map__pin--main
@@ -279,3 +290,16 @@ var mapPinMain = map.querySelector('.map__pin--main');
 mapPinMain.addEventListener('mouseup', function () {
   startActiveMode();
 });
+
+// Функция, вызывающая показ объявления о недвижимости
+var showAds = function () {
+  hideAds();
+  pageActive = map.insertBefore(createAdElement(realEstateAds[0]), similarAdElement);
+};
+
+// Функция, скрывающая объявления о недвижимости
+var hideAds = function () {
+  if (pageActive) {
+    pageActive.remove();
+  }
+};
