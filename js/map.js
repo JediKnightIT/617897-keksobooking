@@ -168,6 +168,7 @@ var createPinElement = function (pin) {
 
   pinElement.addEventListener('click', function () {
     showAds();
+    // getStatePin(pinElement);
   });
 
   return pinElement;
@@ -256,17 +257,27 @@ var adForm = document.querySelector('.ad-form');
 
 // Добавляем тегам fieldset атрибут disabled
 var getDisabledFieldset = function (fieldset) {
-  for (var i = 0; i < fieldset.length; i++) {
-    fieldset[i].disabled = true;
-  }
+  fieldset.forEach(function (item) {
+    item.disabled = true;
+  });
 };
 
 // Убираем у тегов fieldset атрибут disabled
 var getEnabledieldset = function (fieldset) {
-  for (var i = 0; i < fieldset.length; i++) {
-    fieldset[i].disabled = false;
-  }
+  fieldset.forEach(function (item) {
+    item.disabled = false;
+  });
 };
+
+// Функция, проверяющая и возвращающая состояние пина
+// var getStatePin = function (element) {
+//   var activePin = element;
+//   if (activePin) {
+//     activePin.classList.add('map__pin--active');
+//   } else {
+//     activePin.classList.remove('map__pin--active');
+//   }
+// };
 
 getDisabledFieldset(disabledFieldset);
 
