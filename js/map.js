@@ -236,9 +236,11 @@ var createAdElement = function (ad) {
   return adElement;
 };
 
+// ===============================================================================================
 // Блокируем поля формы .ad-form, добавляя атрибут disabled на их родительские блоки fieldset
 // Находим родительские блоки fieldset
-var disabledFieldset = map.querySelector('fieldset');
+var disabledFieldset = map.querySelectorAll('fieldset');
+var adForm = document.querySelector('.ad-form'); // Если вместо document поставить map работать не будет. Не понятно почему, ведь элемент с классом ad-form находиться внутри map
 
 // Добавляем тегам fieldset атрибут disabled
 var getDisabledFieldset = function (fieldset) {
@@ -259,6 +261,7 @@ getDisabledFieldset(disabledFieldset);
 // Функция, переводящая страницу в активное состояние, создающая DOM-элементы меток и объявлений о сдаче недвижимости
 var startActiveMode = function () {
   map.classList.remove('map--faded');
+  adForm.classList.remove('ad-form--disabled');
 
   getEnabledieldset(disabledFieldset);
 
