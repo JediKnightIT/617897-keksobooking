@@ -3,6 +3,8 @@
 // Создаём данные
 var ADS_QUANTITY = 8;
 
+var ESC_KEYCODE = 27;
+
 var authorData = {
   AVATARS: 'img/avatars/user'
 };
@@ -166,9 +168,9 @@ var createPinElement = function (pin) {
   pinElement.querySelector('img').src = pin.author.avatar;
   pinElement.querySelector('img').alt = pin.offer.title;
 
+  // Обработчик событий, показывающий объявление о недвижимости при клике на пин
   pinElement.addEventListener('click', function () {
     showAds();
-    // getStatePin(pinElement);
   });
 
   return pinElement;
@@ -211,6 +213,13 @@ var createPhotoElement = function (pathPhoto) {
   return newPhotoElement;
 };
 
+// Вспомогательная функция для закрытия объявления при нажатии на ESC
+var adCloseEscHandler = function (evt) {
+  if (evt.keyCode === ESC_KEYCODE) {
+    hideAds();
+  }
+};
+
 // Функция, создающая DOM-элемент, соответствующий объявлениям о недвижимости
 var createAdElement = function (ad) {
   var adElement = adTemplate.cloneNode(true);
@@ -241,9 +250,13 @@ var createAdElement = function (ad) {
 
   adElement.querySelector('.popup__avatar').src = ad.author.avatar;
 
+  // Обработчик событий, скрывающий объявление о недвижимости при клике на закрывающий крестик
   adClose.addEventListener('click', function () {
     hideAds();
   });
+
+  // Обработчик событий, скрывающий объявление при нажатии на ESC
+  document.addEventListener('keydown', adCloseEscHandler);
 
   return adElement;
 };
@@ -268,16 +281,6 @@ var getEnabledieldset = function (fieldset) {
     item.disabled = false;
   });
 };
-
-// Функция, проверяющая и возвращающая состояние пина
-// var getStatePin = function (element) {
-//   var activePin = element;
-//   if (activePin) {
-//     activePin.classList.add('map__pin--active');
-//   } else {
-//     activePin.classList.remove('map__pin--active');
-//   }
-// };
 
 getDisabledFieldset(disabledFieldset);
 
