@@ -105,6 +105,8 @@ var disabledFieldset = document.querySelectorAll('fieldset');
 
 var adForm = document.querySelector('.ad-form');
 
+var mapPinMain = map.querySelector('.map__pin--main');
+
 var inputAddress = adForm.querySelector('#address');
 
 var pageActive;
@@ -182,6 +184,7 @@ var createPinElement = function (pin) {
   // Обработчик событий, показывающий объявление о недвижимости при клике на пин
   pinElement.addEventListener('click', function () {
     showAds();
+    pinElement.classList.add('map__pin--active');
   });
 
   return pinElement;
@@ -305,9 +308,6 @@ var startActiveMode = function () {
   // Вычисляем координаты главного пина и записываем их в поле ввода адреса
   writeAddressField(mainPinConfig.HEIGHT);
 };
-
-// Находим класс главного пина map__pin--main
-var mapPinMain = map.querySelector('.map__pin--main');
 
 // Добавляем обработчик события mouseup на элемент .map__pin--main, тем самым переводим страницу в активное состояние
 mapPinMain.addEventListener('mouseup', function () {
