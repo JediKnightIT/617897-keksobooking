@@ -64,6 +64,11 @@ var realEstateData = {
   ]
 };
 
+var mainPinConfig = {
+  WIDTH: 65,
+  HEIGHT: 80
+};
+
 var pinConfig = {
   WIDTH: 50,
   HEIGHT: 70
@@ -95,6 +100,12 @@ var similarPinElement = document.querySelector('.map__pins');
 var adTemplate = template.content.querySelector('.map__card');
 
 var similarAdElement = document.querySelector('.map__filters-container');
+
+var disabledFieldset = document.querySelectorAll('fieldset');
+
+var adForm = document.querySelector('.ad-form');
+
+var inputAddress = adForm.querySelector('#address');
 
 var pageActive;
 
@@ -262,12 +273,6 @@ var createAdElement = function (ad) {
 };
 
 // ===============================================================================================
-// Блокируем поля формы .ad-form, добавляя атрибут disabled на их родительские блоки fieldset
-// Находим родительские блоки fieldset и записываем значение в переменную
-var disabledFieldset = document.querySelectorAll('fieldset');
-// Находим форму и записываем значение в переменную
-var adForm = document.querySelector('.ad-form');
-
 // Добавляем тегам fieldset атрибут disabled
 var getDisabledFieldset = function (fieldset) {
   fieldset.forEach(function (item) {
@@ -292,9 +297,13 @@ var startActiveMode = function () {
   map.classList.remove('map--faded');
   adForm.classList.remove('ad-form--disabled');
 
+  // Убираем атрибут disabled у тега fieldset
   getEnabledieldset(disabledFieldset);
 
   similarPinElement.appendChild(getRenderPinElement(realEstateAds));
+
+  // Вычисляем координаты главного пина и записываем их в поле ввода адреса
+  writeAddressField(mainPinConfig.HEIGHT);
 };
 
 // Находим класс главного пина map__pin--main
@@ -317,3 +326,12 @@ var hideAds = function () {
     pageActive.remove();
   }
 };
+
+// Функция, вычисляющая координаты главного пина и записывающая их в поле ввода адреса
+var writeAddressField = function (height) {
+  var mainPinX = mapPinMain.offsetLeft + mainPinConfig.WIDTH / 2;
+  var mainPinY = mapPinMain.offsetTop + height;
+  inputAddress.value = mainPinX + ', ' + mainPinY;
+};
+
+writeAddressField(mainPinConfig.HEIGHT / 2);
