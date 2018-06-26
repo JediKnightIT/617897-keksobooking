@@ -186,7 +186,7 @@ var createPinElement = function (pin) {
   // Обработчик событий, показывающий объявление о недвижимости при клике на пин
   pinElement.addEventListener('click', function () {
     showAd(pin);
-    getStatePin();
+    activatePin(pinElement);
   });
 
   return pinElement;
@@ -309,12 +309,17 @@ var startActiveMode = function () {
 // Добавляем обработчик события mouseup на элемент .map__pin--main, тем самым переводим страницу в активное состояние
 mapPinMain.addEventListener('mouseup', startActiveMode);
 
-// Функция, возвращающая состояние пина (в активном состоянии пин обрамляется рамкой)
-var getStatePin = function () {
-  if (mapPinTemplate.classList.contains('map__pin--active')) {
-    mapPinTemplate.classList.remove('map__pin--active');
-  } else {
-    mapPinTemplate.classList.add('map__pin--active');
+// Функция, выделяющая активный пин
+var activatePin = function (element) {
+  removeActivePin();
+  pinActive = element;
+  pinActive.classList.add('map__pin--active');
+};
+
+// Функция, снимающая выделение активного пина
+var removeActivePin = function () {
+  if (pinActive) {
+    pinActive.classList.remove('map__pin--active');
   }
 };
 
