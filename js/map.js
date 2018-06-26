@@ -303,7 +303,7 @@ var startActiveMode = function () {
   similarPinElement.appendChild(getRenderPinElement(realEstateAds));
 
   // Вычисляем координаты главного пина и записываем их в поле ввода адреса
-  setAddressField(mainPinSize.HEIGHT);
+  setAddressField(getPinMainCoordinates());
 };
 
 // Добавляем обработчик события mouseup на элемент .map__pin--main, тем самым переводим страницу в активное состояние
@@ -342,11 +342,19 @@ var onElementAction = function () {
   removeActivePin();
 };
 
-// Функция, вычисляющая координаты главного пина и записывающая их в поле ввода адреса
-var setAddressField = function (height) {
-  var mainPinX = mapPinMain.offsetLeft + mainPinSize.WIDTH / 2;
-  var mainPinY = mapPinMain.offsetTop + height;
-  inputAddress.value = mainPinX + ', ' + mainPinY;
+// Функция, вычисляющая координаты главного пина
+var getPinMainCoordinates = function () {
+  var pinMainCoordinates = {
+    x: mapPinMain.offsetLeft + mainPinSize.WIDTH / 2,
+    y: mapPinMain.offsetTop + mainPinSize.HEIGHT
+  };
+
+  return pinMainCoordinates;
 };
 
-setAddressField(mainPinSize.HEIGHT / 2);
+// Функция, записывающая координаты главного пина в поле ввода адреса
+var setAddressField = function (coordinates) {
+  inputAddress.value = coordinates.x + ', ' + coordinates.y;
+};
+
+setAddressField(getPinMainCoordinates());
