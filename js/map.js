@@ -64,12 +64,12 @@ var realEstateData = {
   ]
 };
 
-var mainPinConfig = {
+var mainPinSize = {
   WIDTH: 65,
   HEIGHT: 80
 };
 
-var pinConfig = {
+var pinSize = {
   WIDTH: 50,
   HEIGHT: 70
 };
@@ -87,6 +87,10 @@ var photoElementConfig = {
   HEIGHT: 40,
   ALT: 'Фотография жилья'
 };
+
+var adActive;
+
+var pinActive;
 
 // Находим элементы в разметке и присваиваем их переменным
 var map = document.querySelector('.map');
@@ -108,8 +112,6 @@ var adForm = document.querySelector('.ad-form');
 var mapPinMain = map.querySelector('.map__pin--main');
 
 var inputAddress = adForm.querySelector('#address');
-
-var pageActive;
 
 // Функция, возвращающая путь к расположению аватара
 var getAvatarPath = function (number) {
@@ -177,13 +179,13 @@ var getRealEstateAds = function () {
 var createPinElement = function (pin) {
   var pinElement = mapPinTemplate.cloneNode(true);
 
-  pinElement.style = 'left: ' + (pin.location.x - pinConfig.WIDTH / 2) + 'px; top: ' + (pin.location.y - pinConfig.HEIGHT) + 'px';
+  pinElement.style = 'left: ' + (pin.location.x - pinSize.WIDTH / 2) + 'px; top: ' + (pin.location.y - pinSize.HEIGHT) + 'px';
   pinElement.querySelector('img').src = pin.author.avatar;
   pinElement.querySelector('img').alt = pin.offer.title;
 
   // Обработчик событий, показывающий объявление о недвижимости при клике на пин
   pinElement.addEventListener('click', function () {
-    showAds();
+    showAd();
     getStatePin();
   });
 
@@ -230,7 +232,7 @@ var createPhotoElement = function (pathPhoto) {
 // Вспомогательная функция для закрытия объявления при нажатии на ESC
 var adCloseEscHandler = function (evt) {
   if (evt.keyCode === ESC_KEYCODE) {
-    hideAds();
+    hideAd();
   }
 };
 
@@ -265,9 +267,7 @@ var createAdElement = function (ad) {
   adElement.querySelector('.popup__avatar').src = ad.author.avatar;
 
   // Обработчик событий, скрывающий объявление о недвижимости при клике на закрывающий крестик
-  adClose.addEventListener('click', function () {
-    hideAds();
-  });
+  adClose.addEventListener('click', hideAd);
 
   // Обработчик событий, скрывающий объявление при нажатии на ESC
   document.addEventListener('keydown', adCloseEscHandler);
@@ -275,22 +275,21 @@ var createAdElement = function (ad) {
   return adElement;
 };
 
-// ===============================================================================================
 // Добавляем тегам fieldset атрибут disabled
-var getDisabledFieldset = function (fieldset) {
+var disableFieldsets = function (fieldset) {
   fieldset.forEach(function (item) {
     item.disabled = true;
   });
 };
 
 // Убираем у тегов fieldset атрибут disabled
-var getEnabledieldset = function (fieldset) {
+var enableFieldsets = function (fieldset) {
   fieldset.forEach(function (item) {
     item.disabled = false;
   });
 };
 
-getDisabledFieldset(disabledFieldset);
+disableFieldsets(disabledFieldset);
 
 // Присваиваем значение функции (функция генерирует 8 объявлений) переменной
 var realEstateAds = getRealEstateAds();
@@ -301,18 +300,16 @@ var startActiveMode = function () {
   adForm.classList.remove('ad-form--disabled');
 
   // Убираем атрибут disabled у тега fieldset
-  getEnabledieldset(disabledFieldset);
+  enableFieldsets(disabledFieldset);
 
   similarPinElement.appendChild(getRenderPinElement(realEstateAds));
 
   // Вычисляем координаты главного пина и записываем их в поле ввода адреса
-  writeAddressField(mainPinConfig.HEIGHT);
+  setAddressField(mainPinSize.HEIGHT);
 };
 
 // Добавляем обработчик события mouseup на элемент .map__pin--main, тем самым переводим страницу в активное состояние
-mapPinMain.addEventListener('mouseup', function () {
-  startActiveMode();
-});
+mapPinMain.addEventListener('mouseup', startActiveMode);
 
 // Функция, возвращающая состояние пина (в активном состоянии пин обрамляется рамкой)
 var getStatePin = function () {
@@ -324,23 +321,23 @@ var getStatePin = function () {
 };
 
 // Функция, вызывающая показ объявления о недвижимости
-var showAds = function () {
-  hideAds();
-  pageActive = map.insertBefore(createAdElement(realEstateAds[0]), similarAdElement);
+var showAd = function () {
+  hideAd();
+  adActive = map.insertBefore(createAdElement(realEstateAds[0]), similarAdElement);
 };
 
 // Функция, скрывающая объявления о недвижимости
-var hideAds = function () {
-  if (pageActive) {
-    pageActive.remove();
+var hideAd = function () {
+  if (adActive) {
+    adActive.remove();
   }
 };
 
 // Функция, вычисляющая координаты главного пина и записывающая их в поле ввода адреса
-var writeAddressField = function (height) {
-  var mainPinX = mapPinMain.offsetLeft + mainPinConfig.WIDTH / 2;
+var setAddressField = function (height) {
+  var mainPinX = mapPinMain.offsetLeft + mainPinSize.WIDTH / 2;
   var mainPinY = mapPinMain.offsetTop + height;
   inputAddress.value = mainPinX + ', ' + mainPinY;
 };
 
-writeAddressField(mainPinConfig.HEIGHT / 2);
+setAddressField(mainPinSize.HEIGHT / 2);
