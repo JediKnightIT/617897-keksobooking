@@ -230,9 +230,9 @@ var createPhotoElement = function (pathPhoto) {
 };
 
 // Вспомогательная функция для закрытия объявления при нажатии на ESC
-var adCloseEscHandler = function (evt) {
+var onAdCloseEsc = function (evt) {
   if (evt.keyCode === ESC_KEYCODE) {
-    hideAd();
+    onElementAction();
   }
 };
 
@@ -267,10 +267,10 @@ var createAdElement = function (ad) {
   adElement.querySelector('.popup__avatar').src = ad.author.avatar;
 
   // Обработчик событий, скрывающий объявление о недвижимости при клике на закрывающий крестик
-  adClose.addEventListener('click', hideAd);
+  adClose.addEventListener('click', onElementAction);
 
   // Обработчик событий, скрывающий объявление при нажатии на ESC
-  document.addEventListener('keydown', adCloseEscHandler);
+  document.addEventListener('keydown', onAdCloseEsc);
 
   return adElement;
 };
@@ -334,6 +334,12 @@ var hideAd = function () {
   if (adActive) {
     adActive.remove();
   }
+};
+
+// Функция-обработчик, скрывающая объявление о недвижимости и снимающая выделение активного пина
+var onElementAction = function () {
+  hideAd();
+  removeActivePin();
 };
 
 // Функция, вычисляющая координаты главного пина и записывающая их в поле ввода адреса
