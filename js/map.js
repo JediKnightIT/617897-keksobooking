@@ -185,7 +185,7 @@ var createPinElement = function (pin) {
 
   // Обработчик событий, показывающий объявление о недвижимости при клике на пин
   pinElement.addEventListener('click', function () {
-    showAd();
+    showAd(pin);
     getStatePin();
   });
 
@@ -291,9 +291,6 @@ var enableFieldsets = function (fieldset) {
 
 disableFieldsets(disabledFieldset);
 
-// Присваиваем значение функции (функция генерирует 8 объявлений) переменной
-var realEstateAds = getRealEstateAds();
-
 // Функция, переводящая страницу в активное состояние, создающая DOM-элементы меток и объявлений о сдаче недвижимости
 var startActiveMode = function () {
   map.classList.remove('map--faded');
@@ -302,6 +299,7 @@ var startActiveMode = function () {
   // Убираем атрибут disabled у тега fieldset
   enableFieldsets(disabledFieldset);
 
+  var realEstateAds = getRealEstateAds();
   similarPinElement.appendChild(getRenderPinElement(realEstateAds));
 
   // Вычисляем координаты главного пина и записываем их в поле ввода адреса
@@ -321,9 +319,9 @@ var getStatePin = function () {
 };
 
 // Функция, вызывающая показ объявления о недвижимости
-var showAd = function () {
+var showAd = function (element) {
   hideAd();
-  adActive = map.insertBefore(createAdElement(realEstateAds[0]), similarAdElement);
+  adActive = map.insertBefore(createAdElement(element), similarAdElement);
 };
 
 // Функция, скрывающая объявления о недвижимости
