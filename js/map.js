@@ -183,7 +183,7 @@ var createPinElement = function (pin) {
   pinElement.querySelector('img').src = pin.author.avatar;
   pinElement.querySelector('img').alt = pin.offer.title;
 
-  // Обработчик событий, показывающий объявление о недвижимости при клике на пин
+  // Добавляем обработчик события click
   pinElement.addEventListener('click', function () {
     showAd(pin);
     activatePin(pinElement);
@@ -229,7 +229,7 @@ var createPhotoElement = function (pathPhoto) {
   return newPhotoElement;
 };
 
-// Вспомогательная функция для закрытия объявления при нажатии на ESC
+// Функция-обработчик закрытия объявления при нажатии на ESC
 var onAdCloseEsc = function (evt) {
   if (evt.keyCode === ESC_KEYCODE) {
     onElementAction();
@@ -266,10 +266,10 @@ var createAdElement = function (ad) {
 
   adElement.querySelector('.popup__avatar').src = ad.author.avatar;
 
-  // Обработчик событий, скрывающий объявление о недвижимости при клике на закрывающий крестик
+  // Добавляем обработчик события click
   adClose.addEventListener('click', onElementAction);
 
-  // Обработчик событий, скрывающий объявление при нажатии на ESC
+  // Добавляем обработчик события keydown
   document.addEventListener('keydown', onAdCloseEsc);
 
   return adElement;
@@ -289,25 +289,18 @@ var enableFieldsets = function (fieldset) {
   });
 };
 
-disableFieldsets(disabledFieldset);
-
-// Функция, переводящая страницу в активное состояние, создающая DOM-элементы меток и объявлений о сдаче недвижимости
-var startActiveMode = function () {
-  map.classList.remove('map--faded');
-  adForm.classList.remove('ad-form--disabled');
-
-  // Убираем атрибут disabled у тега fieldset
-  enableFieldsets(disabledFieldset);
-
-  var realEstateAds = getRealEstateAds();
-  similarPinElement.appendChild(getRenderPinElement(realEstateAds));
-
-  // Вычисляем координаты главного пина и записываем их в поле ввода адреса
-  setAddressField(getPinMainCoordinates());
+// Функция, вызывающая показ объявления о недвижимости
+var showAd = function (element) {
+  hideAd();
+  adActive = map.insertBefore(createAdElement(element), similarAdElement);
 };
 
-// Добавляем обработчик события mouseup на элемент .map__pin--main, тем самым переводим страницу в активное состояние
-mapPinMain.addEventListener('mouseup', startActiveMode);
+// Функция, скрывающая объявления о недвижимости
+var hideAd = function () {
+  if (adActive) {
+    adActive.remove();
+  }
+};
 
 // Функция, выделяющая активный пин
 var activatePin = function (element) {
@@ -320,19 +313,6 @@ var activatePin = function (element) {
 var removeActivePin = function () {
   if (pinActive) {
     pinActive.classList.remove('map__pin--active');
-  }
-};
-
-// Функция, вызывающая показ объявления о недвижимости
-var showAd = function (element) {
-  hideAd();
-  adActive = map.insertBefore(createAdElement(element), similarAdElement);
-};
-
-// Функция, скрывающая объявления о недвижимости
-var hideAd = function () {
-  if (adActive) {
-    adActive.remove();
   }
 };
 
@@ -357,4 +337,40 @@ var setAddressField = function (coordinates) {
   inputAddress.value = coordinates.x + ', ' + coordinates.y;
 };
 
-setAddressField(getPinMainCoordinates());
+// Функция-обработчик, вызывающая функцию перевода страницы в активное состояние
+var onPinMainMouseup = function () {
+  activatePage();
+};
+
+// Функция, переводящая страницу в активное состояние, создающая DOM-элементы меток и объявлений о сдаче недвижимости
+var activatePage = function () {
+  map.classList.remove('map--faded');
+  adForm.classList.remove('ad-form--disabled');
+
+  // Убираем атрибут disabled у тега fieldset
+  enableFieldsets(disabledFieldset);
+
+  var realEstateAds = getRealEstateAds();
+
+  similarPinElement.appendChild(getRenderPinElement(realEstateAds));
+
+  // Добавляем обработчик события mouseup
+  mapPinMain.removeEventListener('mouseup', onPinMainMouseup);
+
+  // Вычисляем координаты главного пина и записываем их в поле ввода адреса
+  setAddressField(getPinMainCoordinates());
+};
+
+// Функция, инициализирующая страницу
+var initializePage = function () {
+
+  // Добавляем атрибут disabled у тега fieldset
+  disableFieldsets(disabledFieldset);
+
+  // Добавляем обработчик события mouseup
+  mapPinMain.addEventListener('mouseup', onPinMainMouseup);
+
+  setAddressField(getPinMainCoordinates());
+};
+
+initializePage();
