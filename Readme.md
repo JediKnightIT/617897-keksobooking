@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
-* Студент: [Нияз Гарипов 👨‍🎓](https://up.htmlacademy.ru/javascript/14/user/617897).
-* Наставник: [Сергей Рубец 👨🏻‍💻](https://htmlacademy.ru/profile/amator).
+* Студент: [Нияз Гарипов](https://up.htmlacademy.ru/javascript/14/user/617897).
+* Наставник: [Олег Петров](https://htmlacademy.ru/profile/fyvfyv).
 
 ---
 
