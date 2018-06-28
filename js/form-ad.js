@@ -1,10 +1,10 @@
 'use strict';
 // Создаём словари
 var realEstateTypeToMinPrice = {
-  'bungalo': 0,
-  'flat': 1000,
-  'house': 5000,
-  'palace': 10000
+  bungalo: 0,
+  flat: 1000,
+  house: 5000,
+  palace: 10000
 };
 
 var roomToGuest = {
@@ -33,11 +33,38 @@ var adCapacity = adForm.querySelector('#capacity');
 
 var adFormReset = adForm.querySelector('.ad-form__reset');
 
+// Функция, устанавливающая зависимость минимальной цены от типа жилья
+var getMinPriceFromTypeRealEstate = function () {
+  adPrice.min = realEstateTypeToMinPrice[adType.value];
+  adPrice.placeholder = adPrice.min;
+};
+
 // Функция-обработчик, устанавливающая зависимость минимальной цены от типа жилья
 var onInputAdTypeChange = function () {
-  adPrice.min = realEstateTypeToMinPrice[adType.value];
-  adPrice.placeholder = realEstateTypeToMinPrice[adType.value];
+  getMinPriceFromTypeRealEstate();
 };
 
 // Добавляем обработчик события change
 adType.addEventListener('change', onInputAdTypeChange);
+
+// Функция, получающая значение элемента для синхронизации с другим элементом
+var getElementValue = function (element, evt) {
+  var value = evt.target.value;
+  element.value = value;
+};
+
+// Функция-обработчик, синхронизирующая время заезда и выезда
+var onInputTimeInChange = function (evt) {
+  getElementValue(adTimeOut, evt);
+};
+
+// Добавляем обработчик события change
+adTimeIn.addEventListener('change', onInputTimeInChange);
+
+// Функция-обработчик, синхронизирующая время выезда и заезда
+var onInputTimeOutChange = function (evt) {
+  getElementValue(adTimeIn, evt);
+};
+
+// Добавляем обработчик события change
+adTimeOut.addEventListener('change', onInputTimeOutChange);
