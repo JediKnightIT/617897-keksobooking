@@ -32,3 +32,12 @@ var adRoomNumber = adForm.querySelector('#room_number');
 var adCapacity = adForm.querySelector('#capacity');
 
 var adFormReset = adForm.querySelector('.ad-form__reset');
+
+// Функция-обработчик, устанавливающая зависимость минимальной цены от типа жилья
+var onInputAdTypeChange = function () {
+  adPrice.min = realEstateTypeToMinPrice[adType.value];
+  adPrice.placeholder = realEstateTypeToMinPrice[adType.value];
+};
+
+// Добавляем обработчик события change
+adType.addEventListener('change', onInputAdTypeChange);
