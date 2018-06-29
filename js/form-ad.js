@@ -93,3 +93,15 @@ var onInputRoomChange = function () {
 
 // Добавляем обработчик события change
 adRoomNumber.addEventListener('change', onInputRoomChange);
+
+// Функция, выделающая неверно заполненное поле
+var getInvalidField = function (field) {
+  field.classList.add('ad-form__element--invalid-field');
+  invalidFields.push(field);
+};
+
+// Функция, снимающая выделение неверно заполненного поля
+var removeInvalidField = function (field) {
+  field.classList.remove('ad-form__element--invalid-field');
+  invalidFields.splice(invalidFields.indexOf(field), 1);
+};
