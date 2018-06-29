@@ -69,6 +69,11 @@ var mainPinSize = {
   HEIGHT: 80
 };
 
+window.pinMainStartCoordinates = {
+  x: 570,
+  y: 375
+};
+
 var pinSize = {
   WIDTH: 50,
   HEIGHT: 70
@@ -188,6 +193,8 @@ var createPinElement = function (pin) {
     showAd(pin);
     activatePin(pinElement);
   });
+
+  window.mapPins.push(pinElement);
 
   return pinElement;
 };
@@ -360,6 +367,12 @@ var activatePage = function () {
 
   // Вычисляем координаты главного пина и записываем их в поле ввода адреса
   setAddressField(getPinMainCoordinates());
+
+  window.onInputRoomChange();
+
+  adForm.addEventListener('invalid', function (evt) {
+    window.getInvalidField(evt.target);
+  }, true);
 };
 
 // Функция, инициализирующая страницу

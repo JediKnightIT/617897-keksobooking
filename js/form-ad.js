@@ -124,3 +124,35 @@ var onInputFieldValidity = function () {
 adTitle.addEventListener('change', onInputFieldValidity);
 
 adPrice.addEventListener('change', onInputFieldValidity);
+
+// Функция, отключающая активное состояние страницы
+var disablePageActiveState = function () {
+  // Сбрасываем форму
+  adForm.classList.add('ad-form--disabled');
+  window.disableFieldsets(window.disabledFieldset);
+  adForm.reset();
+  onInputAdTypeChange();
+  invalidFields.forEach(function (field) {
+    field.classList.remove('ad-form__element--invalid-field');
+  });
+
+  // Возвращаем главный пин на начальные координаты
+  window.mapPinMain.style.left = window.pinMainStartCoordinates.x + 'px';
+  window.mapPinMain.style.top = window.pinMainStartCoordinates.y + 'px';
+
+  // Сбрасываем карту и пины
+  mapPins.forEach(function (item) {
+    window.similarPinElement.removeChild(item);
+  });
+  window.setAddressField(window.getPinMainCoordinates());
+  window.map.classList.add('map--faded');
+  mapPins = [];
+  window.onElementAction();
+  window.mapPinMain.addEventListener('mouseup', window.onPinMainMouseup);
+};
+
+// Добавляем обработчик события click
+adFormReset.addEventListener('click', function (evt) {
+  evt.preventDefault();
+  disablePageActiveState();
+});
