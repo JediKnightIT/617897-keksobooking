@@ -14,6 +14,10 @@ var roomToGuest = {
   '100': [0]
 };
 
+var invalidFields = [];
+
+var mapPins = [];
+
 // Находим элементы в разметке и присваиваем их переменным
 var adForm = document.querySelector('.ad-form');
 
@@ -30,6 +34,8 @@ var adTimeOut = adForm.querySelector('#timeout');
 var adRoomNumber = adForm.querySelector('#room_number');
 
 var adCapacity = adForm.querySelector('#capacity');
+
+var adCapacityOption = adCapacity.querySelectorAll('option');
 
 var adFormReset = adForm.querySelector('.ad-form__reset');
 
@@ -68,3 +74,22 @@ var onInputTimeOutChange = function (evt) {
 
 // Добавляем обработчик события change
 adTimeOut.addEventListener('change', onInputTimeOutChange);
+
+// Функция выбора вариантов соответствия количество комнат - количество мест
+var getNumberGuests = function () {
+  var selectedOption = roomToGuest[adRoomNumber.value];
+
+  adCapacityOption.forEach(function (item) {
+    item.disabled = !selectedOption.includes(item.value);
+  });
+
+  adCapacity.value = selectedOption.includes(adCapacity.value) ? adCapacity.value : selectedOption[0];
+};
+
+// Функция-обработчик, приводящая в соответствие количество комнат с количеством гостей
+var onInputRoomChange = function () {
+  getNumberGuests();
+};
+
+// Добавляем обработчик события change
+adRoomNumber.addEventListener('change', onInputRoomChange);
