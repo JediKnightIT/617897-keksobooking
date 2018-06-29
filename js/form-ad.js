@@ -105,3 +105,22 @@ var removeInvalidField = function (field) {
   field.classList.remove('ad-form__element--invalid-field');
   invalidFields.splice(invalidFields.indexOf(field), 1);
 };
+
+// Функция, проверяющая валидность поля при помощи checkValidity
+var checkValidField = function (evt) {
+  if (!evt.target.checkValidity()) {
+    getInvalidField(evt.target);
+  } else if (invalidFields.indexOf(evt.target) !== -1) {
+    removeInvalidField(evt.target);
+  }
+};
+
+// Функция-обработчик, осуществляющая проверку валидности поля формы
+var onInputFieldValidity = function () {
+  checkValidField();
+};
+
+// Добавляем обработчик события change
+adTitle.addEventListener('change', onInputFieldValidity);
+
+adPrice.addEventListener('change', onInputFieldValidity);
