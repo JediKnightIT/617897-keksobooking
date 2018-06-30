@@ -8,10 +8,15 @@ var realEstateTypeToMinPrice = {
 };
 
 var roomToGuest = {
-  '1': [1],
-  '2': [1, 2],
-  '3': [1, 2, 3],
-  '100': [0]
+  '1': ['1'],
+  '2': ['1', '2'],
+  '3': ['1', '2', '3'],
+  '100': ['0']
+};
+
+var pinMainStartCoordinates = {
+  x: 570,
+  y: 375
 };
 
 var invalidFields = [];
@@ -40,28 +45,27 @@ var adCapacityOption = adCapacity.querySelectorAll('option');
 var adFormReset = adForm.querySelector('.ad-form__reset');
 
 // Функция, устанавливающая зависимость минимальной цены от типа жилья
-var getMinPriceFromTypeRealEstate = function () {
+var setPriceFromType = function () {
   adPrice.min = realEstateTypeToMinPrice[adType.value];
   adPrice.placeholder = adPrice.min;
 };
 
 // Функция-обработчик, устанавливающая зависимость минимальной цены от типа жилья
 var onInputAdTypeChange = function () {
-  getMinPriceFromTypeRealEstate();
+  setPriceFromType();
 };
 
 // Добавляем обработчик события change
 adType.addEventListener('change', onInputAdTypeChange);
 
-// Функция, получающая значение элемента для синхронизации с другим элементом
-var getElementValue = function (element, evt) {
-  var value = evt.target.value;
-  element.value = value;
+// Функция, устанавливающая значение выбранного элемента
+var setElementValue = function (element, evt) {
+  element.value = evt.target.value;
 };
 
 // Функция-обработчик, синхронизирующая время заезда и выезда
 var onInputTimeInChange = function (evt) {
-  getElementValue(adTimeOut, evt);
+  setElementValue(adTimeOut, evt);
 };
 
 // Добавляем обработчик события change
@@ -69,7 +73,7 @@ adTimeIn.addEventListener('change', onInputTimeInChange);
 
 // Функция-обработчик, синхронизирующая время выезда и заезда
 var onInputTimeOutChange = function (evt) {
-  getElementValue(adTimeIn, evt);
+  setElementValue(adTimeIn, evt);
 };
 
 // Добавляем обработчик события change
@@ -94,15 +98,15 @@ var onInputRoomChange = function () {
 // Добавляем обработчик события change
 adRoomNumber.addEventListener('change', onInputRoomChange);
 
-// Функция, выделающая неверно заполненное поле
+// Функция, выделяющая неверно заполненное поле
 var getInvalidField = function (field) {
-  field.classList.add('ad-form__element--invalid-field');
+  field.parentNode.classList.add('ad-form__element--invalid-field');
   invalidFields.push(field);
 };
 
 // Функция, снимающая выделение неверно заполненного поля
 var removeInvalidField = function (field) {
-  field.classList.remove('ad-form__element--invalid-field');
+  field.parentNode.classList.remove('ad-form__element--invalid-field');
   invalidFields.splice(invalidFields.indexOf(field), 1);
 };
 
@@ -116,8 +120,8 @@ var checkValidField = function (evt) {
 };
 
 // Функция-обработчик, осуществляющая проверку валидности поля формы
-var onInputFieldValidity = function () {
-  checkValidField();
+var onInputFieldValidity = function (evt) {
+  checkValidField(evt);
 };
 
 // Добавляем обработчик события change
@@ -125,30 +129,49 @@ adTitle.addEventListener('change', onInputFieldValidity);
 
 adPrice.addEventListener('change', onInputFieldValidity);
 
-// Функция, отключающая активное состояние страницы
-var disablePageActiveState = function () {
-  // Сбрасываем форму
-  adForm.classList.add('ad-form--disabled');
-  window.disableFieldsets(window.disabledFieldset);
+// Функция, отключающая активное состояние формы
+var disableForm = function () {
   adForm.reset();
+
+  adForm.classList.add('ad-form--disabled');
+
+  window.disableFieldsets(window.disabledFieldset);
+
   onInputAdTypeChange();
+
   invalidFields.forEach(function (field) {
-    field.classList.remove('ad-form__element--invalid-field');
+    field.parentNode.classList.remove('ad-form__element--invalid-field');
   });
+};
 
-  // Возвращаем главный пин на начальные координаты
-  window.mapPinMain.style.left = window.pinMainStartCoordinates.x + 'px';
-  window.mapPinMain.style.top = window.pinMainStartCoordinates.y + 'px';
+// Функция, отключающая активное состояние карты с пинами
+var disableMap = function () {
+  window.map.classList.add('map--faded');
 
-  // Сбрасываем карту и пины
   mapPins.forEach(function (item) {
     window.similarPinElement.removeChild(item);
   });
+
   window.setAddressField(window.getPinMainCoordinates());
-  window.map.classList.add('map--faded');
+
   mapPins = [];
+
   window.onElementAction();
-  window.mapPinMain.addEventListener('mouseup', window.onPinMainMouseup);
+};
+
+// Функция, возвращающая главный пин в исходное состояние
+var getPinMainInitialState = function () {
+  window.mapPinMain.style.left = pinMainStartCoordinates.x + 'px';
+  window.mapPinMain.style.top = pinMainStartCoordinates.y + 'px';
+
+  window.mapPinMain.addEventListener('mouseup', window.onPinMainMouseUp);
+};
+
+// Функция, отключающая активное состояние страницы
+var disablePageActiveState = function () {
+  disableForm();
+  disableMap();
+  getPinMainInitialState();
 };
 
 // Добавляем обработчик события click

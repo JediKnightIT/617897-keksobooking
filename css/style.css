@@ -601,12 +601,6 @@ fieldset {
   max-width: 50%;
 }
 
-.ad-form__element--invalid-field input,
-.ad-form__element--invalid-field select {
-  -webkit-box-shadow: 0 0 0px 6px #ed002f;
-          box-shadow: 0 0 0px 6px #ed002f;
-}
-
 .ad-form__label {
   display: block;
   padding-bottom: 5px;
@@ -653,6 +647,11 @@ fieldset {
 
 .ad-form__element--time select:first-of-type {
   margin-right: 14px;
+}
+
+.ad-form__element--invalid-field input,
+.ad-form__element--invalid-field select {
+  border: solid 4px #ff0000;
 }
 
 .features legend {

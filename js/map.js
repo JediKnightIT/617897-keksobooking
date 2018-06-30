@@ -69,11 +69,6 @@ var mainPinSize = {
   HEIGHT: 80
 };
 
-window.pinMainStartCoordinates = {
-  x: 570,
-  y: 375
-};
-
 var pinSize = {
   WIDTH: 50,
   HEIGHT: 70
@@ -346,7 +341,7 @@ var setAddressField = function (coordinates) {
 };
 
 // Функция-обработчик, вызывающая функцию перевода страницы в активное состояние
-var onPinMainMouseup = function () {
+var onPinMainMouseUp = function () {
   activatePage();
 };
 
@@ -363,7 +358,7 @@ var activatePage = function () {
   similarPinElement.appendChild(getRenderPinElement(realEstateAds));
 
   // Добавляем обработчик события mouseup
-  mapPinMain.removeEventListener('mouseup', onPinMainMouseup);
+  mapPinMain.removeEventListener('mouseup', onPinMainMouseUp);
 
   // Вычисляем координаты главного пина и записываем их в поле ввода адреса
   setAddressField(getPinMainCoordinates());
@@ -382,7 +377,7 @@ var initializePage = function () {
   disableFieldsets(disabledFieldset);
 
   // Добавляем обработчик события mouseup
-  mapPinMain.addEventListener('mouseup', onPinMainMouseup);
+  mapPinMain.addEventListener('mouseup', onPinMainMouseUp);
 
   setAddressField(getPinMainCoordinates());
 };
