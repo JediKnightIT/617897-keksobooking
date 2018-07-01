@@ -69,6 +69,11 @@ var mainPinSize = {
   HEIGHT: 80
 };
 
+var pinMainStartCoordinates = {
+  x: 570,
+  y: 375
+};
+
 var pinSize = {
   WIDTH: 50,
   HEIGHT: 70
@@ -87,6 +92,8 @@ var photoElementConfig = {
   HEIGHT: 40,
   ALT: 'Фотография жилья'
 };
+
+var mapPins = [];
 
 var adActive;
 
@@ -278,7 +285,7 @@ var createAdElement = function (ad) {
 };
 
 // Добавляем тегам fieldset атрибут disabled
-var disableFieldsets = function (fieldset) {
+window.disableFieldsets = function (fieldset) {
   fieldset.forEach(function (item) {
     item.disabled = true;
   });
@@ -370,51 +377,39 @@ var activatePage = function () {
   }, true);
 };
 
-// Функция, инициализирующая страницу
-var initializePage = function () {
-  window.disablePageActiveState();
+// Функция, отключающая активное состояние карты с пинами
+var disableMap = function () {
+  map.classList.add('map--faded');
 
-  // Добавляем обработчик события mousedown (Drag & Drop главного пина)
-  mapPinMain.addEventListener('mousedown', function (evt) {
-    evt.preventDefault();
-
-    // Записываем начальные координаты главного пина
-    var startPosition = {
-      x: evt.clientX,
-      y: evt.clientY
-    };
-
-    var onMouseMove = function (evtMove) {
-      evtMove.preventDefault();
-
-      // Определяем текущие координаты главного пина
-      var currentPosition = {
-        x: startPosition.x - evtMove.clientX,
-        y: startPosition.y - evtMove.clientY
-      };
-
-      // Перезаписываем начальные координаты на текущие
-      startPosition = {
-        x: evtMove.clientX,
-        y: evtMove.clientY
-      };
-
-      mapPinMain.style.top = (mapPinMain.offsetTop - currentPosition.y) + 'px';
-      mapPinMain.style.left = (mapPinMain.offsetLeft - currentPosition.x) + 'px';
-    };
-
-    var onMouseUp = function (evtUp) {
-      evtUp.preventDefault();
-
-      document.removeEventListener('mousemove', onMouseMove);
-      document.removeEventListener('mouseup', onMouseUp);
-    };
-
-    document.addEventListener('mousemove', onMouseMove);
-    document.addEventListener('mouseup', onMouseUp);
+  mapPins.forEach(function (item) {
+    similarPinElement.removeChild(item);
   });
 
   setAddressField(getPinMainCoordinates());
+
+  mapPins = [];
+
+  onElementAction();
+};
+
+// Функция, возвращающая главный пин в исходное состояние
+var getPinMainInitialState = function () {
+  mapPinMain.style.left = pinMainStartCoordinates.x + 'px';
+  mapPinMain.style.top = pinMainStartCoordinates.y + 'px';
+
+  mapPinMain.addEventListener('mousedown', onPinMainMouseDown);
+};
+
+// Функция, отключающая активное состояние страницы
+var disablePageActiveState = function () {
+  window.disableForm();
+  disableMap();
+  getPinMainInitialState();
+};
+
+// Функция, инициализирующая страницу
+var initializePage = function () {
+  disablePageActiveState();
 };
 
 initializePage();

@@ -14,14 +14,7 @@ var roomToGuest = {
   '100': ['0']
 };
 
-var pinMainStartCoordinates = {
-  x: 570,
-  y: 375
-};
-
 var invalidFields = [];
-
-var mapPins = [];
 
 // Находим элементы в разметке и присваиваем их переменным
 var adForm = document.querySelector('.ad-form');
@@ -130,7 +123,7 @@ adTitle.addEventListener('change', onInputFieldValidity);
 adPrice.addEventListener('change', onInputFieldValidity);
 
 // Функция, отключающая активное состояние формы
-var disableForm = function () {
+window.disableForm = function () {
   adForm.reset();
 
   adForm.classList.add('ad-form--disabled');
@@ -144,38 +137,8 @@ var disableForm = function () {
   });
 };
 
-// Функция, отключающая активное состояние карты с пинами
-var disableMap = function () {
-  window.map.classList.add('map--faded');
-
-  mapPins.forEach(function (item) {
-    window.similarPinElement.removeChild(item);
-  });
-
-  window.setAddressField(window.getPinMainCoordinates());
-
-  mapPins = [];
-
-  window.onElementAction();
-};
-
-// Функция, возвращающая главный пин в исходное состояние
-var getPinMainInitialState = function () {
-  window.mapPinMain.style.left = pinMainStartCoordinates.x + 'px';
-  window.mapPinMain.style.top = pinMainStartCoordinates.y + 'px';
-
-  window.mapPinMain.addEventListener('mousedown', window.onPinMainMouseDown);
-};
-
-// Функция, отключающая активное состояние страницы
-var disablePageActiveState = function () {
-  disableForm();
-  disableMap();
-  getPinMainInitialState();
-};
-
 // Добавляем обработчик события click
 adFormReset.addEventListener('click', function (evt) {
   evt.preventDefault();
-  disablePageActiveState();
+  window.disablePageActiveState();
 });
