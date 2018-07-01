@@ -164,7 +164,7 @@ var getPinMainInitialState = function () {
   window.mapPinMain.style.left = pinMainStartCoordinates.x + 'px';
   window.mapPinMain.style.top = pinMainStartCoordinates.y + 'px';
 
-  window.mapPinMain.addEventListener('mouseup', window.onPinMainMouseUp);
+  window.mapPinMain.addEventListener('mousedown', window.onPinMainMouseDown);
 };
 
 // Функция, отключающая активное состояние страницы

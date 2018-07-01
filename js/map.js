@@ -341,7 +341,7 @@ var setAddressField = function (coordinates) {
 };
 
 // Функция-обработчик, вызывающая функцию перевода страницы в активное состояние
-var onPinMainMouseUp = function () {
+var onPinMainMouseDown = function () {
   activatePage();
 };
 
@@ -357,8 +357,8 @@ var activatePage = function () {
 
   similarPinElement.appendChild(getRenderPinElement(realEstateAds));
 
-  // Добавляем обработчик события mouseup
-  mapPinMain.removeEventListener('mouseup', onPinMainMouseUp);
+  // Добавляем обработчик события mousedown
+  mapPinMain.removeEventListener('mousedown', onPinMainMouseDown);
 
   // Вычисляем координаты главного пина и записываем их в поле ввода адреса
   setAddressField(getPinMainCoordinates());
@@ -372,12 +372,47 @@ var activatePage = function () {
 
 // Функция, инициализирующая страницу
 var initializePage = function () {
+  window.disablePageActiveState();
 
-  // Добавляем атрибут disabled у тега fieldset
-  disableFieldsets(disabledFieldset);
+  // Добавляем обработчик события mousedown (Drag & Drop главного пина)
+  mapPinMain.addEventListener('mousedown', function (evt) {
+    evt.preventDefault();
 
-  // Добавляем обработчик события mouseup
-  mapPinMain.addEventListener('mouseup', onPinMainMouseUp);
+    // Записываем начальные координаты главного пина
+    var startPosition = {
+      x: evt.clientX,
+      y: evt.clientY
+    };
+
+    var onMouseMove = function (evtMove) {
+      evtMove.preventDefault();
+
+      // Определяем текущие координаты главного пина
+      var currentPosition = {
+        x: startPosition.x - evtMove.clientX,
+        y: startPosition.y - evtMove.clientY
+      };
+
+      // Перезаписываем начальные координаты на текущие
+      startPosition = {
+        x: evtMove.clientX,
+        y: evtMove.clientY
+      };
+
+      mapPinMain.style.top = (mapPinMain.offsetTop - currentPosition.y) + 'px';
+      mapPinMain.style.left = (mapPinMain.offsetLeft - currentPosition.x) + 'px';
+    };
+
+    var onMouseUp = function (evtUp) {
+      evtUp.preventDefault();
+
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+    };
+
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+  });
 
   setAddressField(getPinMainCoordinates());
 };
