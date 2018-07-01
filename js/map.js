@@ -431,6 +431,34 @@ var initializePage = function () {
         y: startPosition.y - evtMove.clientY
       };
 
+      // Создаём объект для хранения отслеживаемых позиции при перемещении
+      var newPosition = {
+        x: (mapPinMain.offsetLeft - currentPosition.x) + 'px',
+        y: (mapPinMain.offsetTop - currentPosition.y) + 'px'
+      };
+
+      // Создаём объект для хранения координат при минимальных ограничениях размещения пина
+      var minLimitCoordinates = {
+        x: mapPinMain.offsetWidth / 2,
+        y: realEstateData.location.Y_MIN - mainPinSize.HEIGHT
+      };
+
+      // Создаём объект для хранения координат при максимальных ограничениях размещения пина
+      var maxLimitCoordinates = {
+        x: map.offsetWidth - mapPinMain.offsetWidth / 2,
+        y: realEstateData.location.Y_MAX - mainPinSize.HEIGHT
+      };
+
+      // Создаём условия по размещению пина по горизонтали
+      if (newPosition.x > minLimitCoordinates.x || newPosition.x < maxLimitCoordinates.x) {
+        mapPinMain.style.left = newPosition.x;
+      }
+
+      // Создаём условия по размещению пина по вертикали
+      if (newPosition.y > minLimitCoordinates.y || newPosition.y > maxLimitCoordinates.y) {
+        mapPinMain.style.top = newPosition.y;
+      }
+
       // Перезаписываем начальные координаты на текущие
       startPosition = {
         x: evtMove.clientX,
