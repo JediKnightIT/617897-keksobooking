@@ -466,6 +466,14 @@ var initializePage = function () {
       };
     };
 
+    // Функция-обработчик, прекращающая перемещение главного пина
+    var onMouseUp = function (evtUp) {
+      evtUp.preventDefault();
+
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+    };
+
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
 
