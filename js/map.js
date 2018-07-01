@@ -410,6 +410,39 @@ var disablePageActiveState = function () {
 // Функция, инициализирующая страницу
 var initializePage = function () {
   disablePageActiveState();
+
+  // Добавляем обработчик события mousedown (Drag & Drop главного пина)
+  mapPinMain.addEventListener('mousedown', function (evt) {
+    evt.preventDefault();
+
+    // Записываем начальные координаты главного пина
+    var startPosition = {
+      x: evt.clientX,
+      y: evt.clientY
+    };
+
+    // Функция-обработчик, перемещающая главный пин
+    var onMouseMove = function (evtMove) {
+      evtMove.preventDefault();
+
+      // Определяем текущие координаты главного пина
+      var currentPosition = {
+        x: startPosition.x - evtMove.clientX,
+        y: startPosition.y - evtMove.clientY
+      };
+
+      // Перезаписываем начальные координаты на текущие
+      startPosition = {
+        x: evtMove.clientX,
+        y: evtMove.clientY
+      };
+    };
+
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+
+    setAddressField(getPinMainCoordinates());
+  });
 };
 
 initializePage();
