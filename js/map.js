@@ -397,6 +397,8 @@ var getPinMainInitialState = function () {
   mapPinMain.style.left = pinMainStartCoordinates.x + 'px';
   mapPinMain.style.top = pinMainStartCoordinates.y + 'px';
 
+  setAddressField(getPinMainCoordinates());
+
   mapPinMain.addEventListener('mousedown', onPinMainMouseDown);
 };
 
@@ -433,30 +435,30 @@ var initializePage = function () {
 
       // Создаём объект для хранения отслеживаемых позиции при перемещении
       var newPosition = {
-        x: (mapPinMain.offsetLeft - currentPosition.x) + 'px',
-        y: (mapPinMain.offsetTop - currentPosition.y) + 'px'
+        x: mapPinMain.offsetLeft - currentPosition.x,
+        y: mapPinMain.offsetTop - currentPosition.y
       };
 
       // Создаём объект для хранения координат при минимальных ограничениях размещения пина
       var minLimitCoordinates = {
-        x: mapPinMain.offsetWidth / 2,
+        x: mapPinMain.clientWidth / 2 * (-1),
         y: realEstateData.location.Y_MIN - mainPinSize.HEIGHT
       };
 
       // Создаём объект для хранения координат при максимальных ограничениях размещения пина
       var maxLimitCoordinates = {
-        x: map.offsetWidth - mapPinMain.offsetWidth / 2,
+        x: map.clientWidth - mapPinMain.clientWidth / 2,
         y: realEstateData.location.Y_MAX - mainPinSize.HEIGHT
       };
 
       // Создаём условия по размещению пина по горизонтали
-      if (newPosition.x > minLimitCoordinates.x || newPosition.x < maxLimitCoordinates.x) {
-        mapPinMain.style.left = newPosition.x;
+      if (newPosition.x < minLimitCoordinates.x || newPosition.x > maxLimitCoordinates.x) {
+        newPosition.x = mapPinMain.offsetLeft;
       }
 
       // Создаём условия по размещению пина по вертикали
-      if (newPosition.y > minLimitCoordinates.y || newPosition.y > maxLimitCoordinates.y) {
-        mapPinMain.style.top = newPosition.y;
+      if (newPosition.y < minLimitCoordinates.y || newPosition.y > maxLimitCoordinates.y) {
+        newPosition.y = mapPinMain.offsetTop;
       }
 
       // Перезаписываем начальные координаты на текущие
@@ -464,6 +466,11 @@ var initializePage = function () {
         x: evtMove.clientX,
         y: evtMove.clientY
       };
+
+      mapPinMain.style.left = newPosition.x + 'px';
+      mapPinMain.style.top = newPosition.y + 'px';
+
+      setAddressField(getPinMainCoordinates());
     };
 
     // Функция-обработчик, прекращающая перемещение главного пина
@@ -476,8 +483,6 @@ var initializePage = function () {
 
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
-
-    setAddressField(getPinMainCoordinates());
   });
 };
 
