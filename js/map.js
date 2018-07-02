@@ -116,6 +116,8 @@ var disabledFieldset = document.querySelectorAll('fieldset');
 
 var adForm = document.querySelector('.ad-form');
 
+var adFormReset = adForm.querySelector('.ad-form__reset');
+
 var mapPinMain = map.querySelector('.map__pin--main');
 
 var inputAddress = adForm.querySelector('#address');
@@ -196,7 +198,7 @@ var createPinElement = function (pin) {
     activatePin(pinElement);
   });
 
-  window.mapPins.push(pinElement);
+  mapPins.push(pinElement);
 
   return pinElement;
 };
@@ -285,7 +287,7 @@ var createAdElement = function (ad) {
 };
 
 // Добавляем тегам fieldset атрибут disabled
-window.disableFieldsets = function (fieldset) {
+var disableFieldsets = function (fieldset) {
   fieldset.forEach(function (item) {
     item.disabled = true;
   });
@@ -377,6 +379,21 @@ var activatePage = function () {
   }, true);
 };
 
+// Функция, отключающая активное состояние формы
+var disableForm = function () {
+  adForm.reset();
+
+  adForm.classList.add('ad-form--disabled');
+
+  disableFieldsets(disabledFieldset);
+
+  window.onInputAdTypeChange();
+
+  window.invalidFields.forEach(function (field) {
+    field.parentNode.classList.remove('ad-form__element--invalid-field');
+  });
+};
+
 // Функция, отключающая активное состояние карты с пинами
 var disableMap = function () {
   map.classList.add('map--faded');
@@ -404,10 +421,16 @@ var getPinMainInitialState = function () {
 
 // Функция, отключающая активное состояние страницы
 var disablePageActiveState = function () {
-  window.disableForm();
+  disableForm();
   disableMap();
   getPinMainInitialState();
 };
+
+// Добавляем обработчик события click
+adFormReset.addEventListener('click', function (evt) {
+  evt.preventDefault();
+  disablePageActiveState();
+});
 
 // Функция, инициализирующая страницу
 var initializePage = function () {
@@ -441,7 +464,7 @@ var initializePage = function () {
 
       // Создаём объект для хранения координат при минимальных ограничениях размещения пина
       var minLimitCoordinates = {
-        x: mapPinMain.clientWidth / 2 * (-1),
+        x: -mapPinMain.clientWidth / 2,
         y: realEstateData.location.Y_MIN - mainPinSize.HEIGHT
       };
 

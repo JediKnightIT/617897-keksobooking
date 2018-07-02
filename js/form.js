@@ -35,8 +35,6 @@ var adCapacity = adForm.querySelector('#capacity');
 
 var adCapacityOption = adCapacity.querySelectorAll('option');
 
-var adFormReset = adForm.querySelector('.ad-form__reset');
-
 // Функция, устанавливающая зависимость минимальной цены от типа жилья
 var setPriceFromType = function () {
   adPrice.min = realEstateTypeToMinPrice[adType.value];
@@ -121,24 +119,3 @@ var onInputFieldValidity = function (evt) {
 adTitle.addEventListener('change', onInputFieldValidity);
 
 adPrice.addEventListener('change', onInputFieldValidity);
-
-// Функция, отключающая активное состояние формы
-window.disableForm = function () {
-  adForm.reset();
-
-  adForm.classList.add('ad-form--disabled');
-
-  window.disableFieldsets(window.disabledFieldset);
-
-  onInputAdTypeChange();
-
-  invalidFields.forEach(function (field) {
-    field.parentNode.classList.remove('ad-form__element--invalid-field');
-  });
-};
-
-// Добавляем обработчик события click
-adFormReset.addEventListener('click', function (evt) {
-  evt.preventDefault();
-  window.disablePageActiveState();
-});
