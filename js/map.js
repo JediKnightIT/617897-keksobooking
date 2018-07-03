@@ -372,10 +372,10 @@ var activatePage = function () {
   // Вычисляем координаты главного пина и записываем их в поле ввода адреса
   setAddressField(getPinMainCoordinates());
 
-  window.onInputRoomChange();
+  window.form.onInputRoomChange();
 
   adForm.addEventListener('invalid', function (evt) {
-    window.getInvalidField(evt.target);
+    window.form.getInvalidField(evt.target);
   }, true);
 };
 
@@ -387,9 +387,9 @@ var disableForm = function () {
 
   disableFieldsets(disabledFieldset);
 
-  window.onInputAdTypeChange();
+  window.form.onInputAdTypeChange();
 
-  window.invalidFields.forEach(function (field) {
+  window.form.invalidFields.forEach(function (field) {
     field.parentNode.classList.remove('ad-form__element--invalid-field');
   });
 };
