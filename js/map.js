@@ -5,73 +5,19 @@ var ADS_QUANTITY = 8;
 
 var ESC_KEYCODE = 27;
 
-var authorData = {
-  AVATARS: 'img/avatars/user'
-};
-
-var realEstateData = {
-  location: {
-    X_MIN: 300,
-    X_MAX: 900,
+var mainPinData = {
+  sizes: {
+    WIDTH: 65,
+    HEIGHT: 80
+  },
+  coordinates: {
+    X: 570,
+    Y: 375
+  },
+  verticalRange: {
     Y_MIN: 130,
     Y_MAX: 630
-  },
-  price: {
-    MIN: 1000,
-    MAX: 1000000
-  },
-  rooms: {
-    MIN: 1,
-    MAX: 5
-  },
-  guests: {
-    MIN: 1,
-    MAX: 25
-  },
-  TITLES: [
-    'Большая уютная квартира',
-    'Маленькая неуютная квартира',
-    'Огромный прекрасный дворец',
-    'Маленький ужасный дворец',
-    'Красивый гостевой домик',
-    'Некрасивый негостеприимный домик',
-    'Уютное бунгало далеко от моря',
-    'Неуютное бунгало по колено в воде'
-  ],
-  TYPES: [
-    'palace',
-    'flat',
-    'house',
-    'bungalo'
-  ],
-  CHECKIN_CHECKOUT: [
-    '12:00',
-    '13:00',
-    '14:00'
-  ],
-  FEATURES: [
-    'wifi',
-    'dishwasher',
-    'parking',
-    'washer',
-    'elevator',
-    'conditioner'
-  ],
-  PHOTOS: [
-    'http://o0.github.io/assets/images/tokyo/hotel1.jpg',
-    'http://o0.github.io/assets/images/tokyo/hotel2.jpg',
-    'http://o0.github.io/assets/images/tokyo/hotel3.jpg'
-  ]
-};
-
-var mainPinSize = {
-  WIDTH: 65,
-  HEIGHT: 80
-};
-
-var pinMainStartCoordinates = {
-  x: 570,
-  y: 375
+  }
 };
 
 var pinSize = {
@@ -122,63 +68,11 @@ var mapPinMain = map.querySelector('.map__pin--main');
 
 var inputAddress = adForm.querySelector('#address');
 
-// Функция, возвращающая путь к расположению аватара
-var getAvatarPath = function (number) {
-  var numberAvatar = number > 9 ? number : '0' + number;
-  return authorData.AVATARS + numberAvatar + '.png';
-};
-
-// Функция, возвращающая случайное целое число от min(включено) до max(включено).
-var getRandomIntegerElement = function (min, max) {
-  return min + Math.floor(Math.random() * (max + 1 - min));
-};
-
-// Функция, возвращающая случайный элемент из массива
-var getRandomArrayElement = function (array) {
-  return array[Math.floor((Math.random() * array.length))];
-};
-
-// Функция, возвращающая случайную длину массива
-var getArrayStringsRandomLength = function (array) {
-  return array.slice(getRandomIntegerElement(0, array.length));
-};
-
-// Функция, возвращающая сгенерированные данные объекта недвижимости
-var getDataObjectRealEstate = function (index) {
-
-// Присваиваем переменным location сгенерированные координаты месторасположения недвижимости
-  var locationX = getRandomIntegerElement(realEstateData.location.X_MIN, realEstateData.location.X_MAX);
-  var locationY = getRandomIntegerElement(realEstateData.location.Y_MIN, realEstateData.location.Y_MAX);
-
-  return {
-    author: {
-      avatar: getAvatarPath(index + 1)
-    },
-    offer: {
-      title: realEstateData.TITLES[index],
-      address: locationX + ', ' + locationY,
-      price: getRandomIntegerElement(realEstateData.price.MIN, realEstateData.price.MAX),
-      type: getRandomArrayElement(realEstateData.TYPES),
-      rooms: getRandomIntegerElement(realEstateData.rooms.MIN, realEstateData.rooms.MAX),
-      guests: getRandomIntegerElement(realEstateData.guests.MIN, realEstateData.guests.MAX),
-      checkin: getRandomArrayElement(realEstateData.CHECKIN_CHECKOUT),
-      checkout: getRandomArrayElement(realEstateData.CHECKIN_CHECKOUT),
-      features: getArrayStringsRandomLength(realEstateData.FEATURES),
-      description: '',
-      photos: realEstateData.PHOTOS
-    },
-    location: {
-      x: locationX,
-      y: locationY
-    }
-  };
-};
-
 // Функция, возвращающая массив из n сгенерированных объектов. Массив из 8 объявлений о сдаче недвижимости
 var getRealEstateAds = function () {
   var realEstateAds = [];
   for (var i = 0; i < ADS_QUANTITY; i++) {
-    realEstateAds.push(getDataObjectRealEstate(i));
+    realEstateAds.push(window.getDataObjectRealEstate(i));
   }
 
   return realEstateAds;
@@ -337,8 +231,8 @@ var onElementAction = function () {
 // Функция, вычисляющая координаты главного пина
 var getPinMainCoordinates = function () {
   var pinMainCoordinates = {
-    x: mapPinMain.offsetLeft + mainPinSize.WIDTH / 2,
-    y: mapPinMain.offsetTop + mainPinSize.HEIGHT
+    x: mapPinMain.offsetLeft + mainPinData.sizes.WIDTH / 2,
+    y: mapPinMain.offsetTop + mainPinData.sizes.HEIGHT
   };
 
   return pinMainCoordinates;
@@ -411,8 +305,8 @@ var disableMap = function () {
 
 // Функция, возвращающая главный пин в исходное состояние
 var getPinMainInitialState = function () {
-  mapPinMain.style.left = pinMainStartCoordinates.x + 'px';
-  mapPinMain.style.top = pinMainStartCoordinates.y + 'px';
+  mapPinMain.style.left = mainPinData.coordinates.X + 'px';
+  mapPinMain.style.top = mainPinData.coordinates.Y + 'px';
 
   setAddressField(getPinMainCoordinates());
 
@@ -465,13 +359,13 @@ var initializePage = function () {
       // Создаём объект для хранения координат при минимальных ограничениях размещения пина
       var minLimitCoordinates = {
         x: -mapPinMain.clientWidth / 2,
-        y: realEstateData.location.Y_MIN - mainPinSize.HEIGHT
+        y: mainPinData.verticalRange.Y_MIN - mainPinData.sizes.HEIGHT
       };
 
       // Создаём объект для хранения координат при максимальных ограничениях размещения пина
       var maxLimitCoordinates = {
         x: map.clientWidth - mapPinMain.clientWidth / 2,
-        y: realEstateData.location.Y_MAX - mainPinSize.HEIGHT
+        y: mainPinData.verticalRange.Y_MAX - mainPinData.sizes.HEIGHT
       };
 
       // Создаём условия по размещению пина по горизонтали
