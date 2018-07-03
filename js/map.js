@@ -69,6 +69,11 @@ var mainPinSize = {
   HEIGHT: 80
 };
 
+var pinMainStartCoordinates = {
+  x: 570,
+  y: 375
+};
+
 var pinSize = {
   WIDTH: 50,
   HEIGHT: 70
@@ -87,6 +92,8 @@ var photoElementConfig = {
   HEIGHT: 40,
   ALT: 'Фотография жилья'
 };
+
+var mapPins = [];
 
 var adActive;
 
@@ -108,6 +115,8 @@ var similarAdElement = document.querySelector('.map__filters-container');
 var disabledFieldset = document.querySelectorAll('fieldset');
 
 var adForm = document.querySelector('.ad-form');
+
+var adFormReset = adForm.querySelector('.ad-form__reset');
 
 var mapPinMain = map.querySelector('.map__pin--main');
 
@@ -189,7 +198,7 @@ var createPinElement = function (pin) {
     activatePin(pinElement);
   });
 
-  window.mapPins.push(pinElement);
+  mapPins.push(pinElement);
 
   return pinElement;
 };
@@ -341,7 +350,7 @@ var setAddressField = function (coordinates) {
 };
 
 // Функция-обработчик, вызывающая функцию перевода страницы в активное состояние
-var onPinMainMouseUp = function () {
+var onPinMainMouseDown = function () {
   activatePage();
 };
 
@@ -357,8 +366,8 @@ var activatePage = function () {
 
   similarPinElement.appendChild(getRenderPinElement(realEstateAds));
 
-  // Добавляем обработчик события mouseup
-  mapPinMain.removeEventListener('mouseup', onPinMainMouseUp);
+  // Добавляем обработчик события mousedown
+  mapPinMain.removeEventListener('mousedown', onPinMainMouseDown);
 
   // Вычисляем координаты главного пина и записываем их в поле ввода адреса
   setAddressField(getPinMainCoordinates());
@@ -370,16 +379,134 @@ var activatePage = function () {
   }, true);
 };
 
-// Функция, инициализирующая страницу
-var initializePage = function () {
+// Функция, отключающая активное состояние формы
+var disableForm = function () {
+  adForm.reset();
 
-  // Добавляем атрибут disabled у тега fieldset
+  adForm.classList.add('ad-form--disabled');
+
   disableFieldsets(disabledFieldset);
 
-  // Добавляем обработчик события mouseup
-  mapPinMain.addEventListener('mouseup', onPinMainMouseUp);
+  window.onInputAdTypeChange();
+
+  window.invalidFields.forEach(function (field) {
+    field.parentNode.classList.remove('ad-form__element--invalid-field');
+  });
+};
+
+// Функция, отключающая активное состояние карты с пинами
+var disableMap = function () {
+  map.classList.add('map--faded');
+
+  mapPins.forEach(function (item) {
+    similarPinElement.removeChild(item);
+  });
 
   setAddressField(getPinMainCoordinates());
+
+  mapPins = [];
+
+  onElementAction();
+};
+
+// Функция, возвращающая главный пин в исходное состояние
+var getPinMainInitialState = function () {
+  mapPinMain.style.left = pinMainStartCoordinates.x + 'px';
+  mapPinMain.style.top = pinMainStartCoordinates.y + 'px';
+
+  setAddressField(getPinMainCoordinates());
+
+  mapPinMain.addEventListener('mousedown', onPinMainMouseDown);
+};
+
+// Функция, отключающая активное состояние страницы
+var disablePageActiveState = function () {
+  disableForm();
+  disableMap();
+  getPinMainInitialState();
+};
+
+// Добавляем обработчик события click
+adFormReset.addEventListener('click', function (evt) {
+  evt.preventDefault();
+  disablePageActiveState();
+});
+
+// Функция, инициализирующая страницу
+var initializePage = function () {
+  disablePageActiveState();
+
+  // Добавляем обработчик события mousedown (Drag & Drop главного пина)
+  mapPinMain.addEventListener('mousedown', function (evt) {
+    evt.preventDefault();
+
+    // Записываем начальные координаты главного пина
+    var startPosition = {
+      x: evt.clientX,
+      y: evt.clientY
+    };
+
+    // Функция-обработчик, перемещающая главный пин
+    var onMouseMove = function (evtMove) {
+      evtMove.preventDefault();
+
+      // Определяем текущие координаты главного пина
+      var currentPosition = {
+        x: startPosition.x - evtMove.clientX,
+        y: startPosition.y - evtMove.clientY
+      };
+
+      // Создаём объект для хранения отслеживаемых позиции при перемещении
+      var newPosition = {
+        x: mapPinMain.offsetLeft - currentPosition.x,
+        y: mapPinMain.offsetTop - currentPosition.y
+      };
+
+      // Создаём объект для хранения координат при минимальных ограничениях размещения пина
+      var minLimitCoordinates = {
+        x: -mapPinMain.clientWidth / 2,
+        y: realEstateData.location.Y_MIN - mainPinSize.HEIGHT
+      };
+
+      // Создаём объект для хранения координат при максимальных ограничениях размещения пина
+      var maxLimitCoordinates = {
+        x: map.clientWidth - mapPinMain.clientWidth / 2,
+        y: realEstateData.location.Y_MAX - mainPinSize.HEIGHT
+      };
+
+      // Создаём условия по размещению пина по горизонтали
+      if (newPosition.x < minLimitCoordinates.x || newPosition.x > maxLimitCoordinates.x) {
+        newPosition.x = mapPinMain.offsetLeft;
+      }
+
+      // Создаём условия по размещению пина по вертикали
+      if (newPosition.y < minLimitCoordinates.y || newPosition.y > maxLimitCoordinates.y) {
+        newPosition.y = mapPinMain.offsetTop;
+      }
+
+      // Перезаписываем начальные координаты на текущие
+      startPosition = {
+        x: evtMove.clientX,
+        y: evtMove.clientY
+      };
+
+      mapPinMain.style.left = newPosition.x + 'px';
+      mapPinMain.style.top = newPosition.y + 'px';
+
+      setAddressField(getPinMainCoordinates());
+    };
+
+    // Функция-обработчик, прекращающая перемещение главного пина
+    var onMouseUp = function (evtUp) {
+      evtUp.preventDefault();
+
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+    };
+
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+  });
 };
 
 initializePage();

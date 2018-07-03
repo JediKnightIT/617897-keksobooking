@@ -14,14 +14,7 @@ var roomToGuest = {
   '100': ['0']
 };
 
-var pinMainStartCoordinates = {
-  x: 570,
-  y: 375
-};
-
 var invalidFields = [];
-
-var mapPins = [];
 
 // Находим элементы в разметке и присваиваем их переменным
 var adForm = document.querySelector('.ad-form');
@@ -41,8 +34,6 @@ var adRoomNumber = adForm.querySelector('#room_number');
 var adCapacity = adForm.querySelector('#capacity');
 
 var adCapacityOption = adCapacity.querySelectorAll('option');
-
-var adFormReset = adForm.querySelector('.ad-form__reset');
 
 // Функция, устанавливающая зависимость минимальной цены от типа жилья
 var setPriceFromType = function () {
@@ -128,54 +119,3 @@ var onInputFieldValidity = function (evt) {
 adTitle.addEventListener('change', onInputFieldValidity);
 
 adPrice.addEventListener('change', onInputFieldValidity);
-
-// Функция, отключающая активное состояние формы
-var disableForm = function () {
-  adForm.reset();
-
-  adForm.classList.add('ad-form--disabled');
-
-  window.disableFieldsets(window.disabledFieldset);
-
-  onInputAdTypeChange();
-
-  invalidFields.forEach(function (field) {
-    field.parentNode.classList.remove('ad-form__element--invalid-field');
-  });
-};
-
-// Функция, отключающая активное состояние карты с пинами
-var disableMap = function () {
-  window.map.classList.add('map--faded');
-
-  mapPins.forEach(function (item) {
-    window.similarPinElement.removeChild(item);
-  });
-
-  window.setAddressField(window.getPinMainCoordinates());
-
-  mapPins = [];
-
-  window.onElementAction();
-};
-
-// Функция, возвращающая главный пин в исходное состояние
-var getPinMainInitialState = function () {
-  window.mapPinMain.style.left = pinMainStartCoordinates.x + 'px';
-  window.mapPinMain.style.top = pinMainStartCoordinates.y + 'px';
-
-  window.mapPinMain.addEventListener('mouseup', window.onPinMainMouseUp);
-};
-
-// Функция, отключающая активное состояние страницы
-var disablePageActiveState = function () {
-  disableForm();
-  disableMap();
-  getPinMainInitialState();
-};
-
-// Добавляем обработчик события click
-adFormReset.addEventListener('click', function (evt) {
-  evt.preventDefault();
-  disablePageActiveState();
-});
