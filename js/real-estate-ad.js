@@ -1,6 +1,7 @@
 'use strict';
 
 (function () {
+  // Создаём объект в глобальной ОВ
   window.realEstateAd = {
     // Функция, вызывающая показ объявления о недвижимости
     showAd: function (element) {
@@ -27,8 +28,10 @@
     }
   };
 
+  // Создаём переменную с кодом клавиши ESC
   var ESC_KEYCODE = 27;
 
+  // Создаём объекты с данными
   var translationRealEstateTypes = {
     palace: 'Дворец',
     flat: 'Квартира',
@@ -45,6 +48,7 @@
 
   var adActive;
 
+  // Находим элементы в разметке и присваиваем их переменным
   var map = document.querySelector('.map');
 
   var template = document.querySelector('template');

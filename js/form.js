@@ -1,7 +1,6 @@
 'use strict';
 
 (function () {
-
   // Создаём объект в глобальной ОВ
   window.form = {
     invalidFields: [],
@@ -17,6 +16,32 @@
     // Функция-обработчик, устанавливающая зависимость минимальной цены от типа жилья
     onInputAdTypeChange: function () {
       setPriceFromType();
+    },
+    // Добавляем тегам fieldset атрибут disabled
+    disableFieldsets: function (fieldset) {
+      fieldset.forEach(function (item) {
+        item.disabled = true;
+      });
+    },
+    // Убираем у тегов fieldset атрибут disabled
+    enableFieldsets: function (fieldset) {
+      fieldset.forEach(function (item) {
+        item.disabled = false;
+      });
+    },
+    // Функция, отключающая активное состояние формы
+    disableForm: function () {
+      adForm.reset();
+
+      adForm.classList.add('ad-form--disabled');
+
+      window.form.disableFieldsets(disabledFieldset);
+
+      window.form.onInputAdTypeChange();
+
+      window.form.invalidFields.forEach(function (field) {
+        field.parentNode.classList.remove('ad-form__element--invalid-field');
+      });
     }
   };
 
@@ -37,6 +62,8 @@
 
   // Находим элементы в разметке и присваиваем их переменным
   var adForm = document.querySelector('.ad-form');
+
+  var disabledFieldset = document.querySelectorAll('fieldset');
 
   var adTitle = adForm.querySelector('#title');
 

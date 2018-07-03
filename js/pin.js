@@ -1,6 +1,7 @@
 'use strict';
 
 (function () {
+  // Создаём объект в глобальной ОВ
   window.pin = {
     mapPins: [],
     // Функция, отрисовывающая сгенерированный DOM-элемент меток на карте
@@ -20,6 +21,7 @@
     }
   };
 
+  // Создаём объекты с данными
   var pinSize = {
     WIDTH: 50,
     HEIGHT: 70
@@ -27,6 +29,7 @@
 
   var pinActive;
 
+  // Находим элементы в разметке и присваиваем их переменным
   var template = document.querySelector('template');
 
   var mapPinTemplate = template.content.querySelector('.map__pin');

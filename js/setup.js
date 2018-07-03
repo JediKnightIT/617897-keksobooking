@@ -1,6 +1,7 @@
 'use strict';
 
 (function () {
+  // Создаём объект в глобальной ОВ
   window.setup = {
     // Функция, возвращающая случайное целое число от min(включено) до max(включено).
     getRandomIntegerElement: function (min, max) {

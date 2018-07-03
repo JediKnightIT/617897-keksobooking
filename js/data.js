@@ -1,6 +1,7 @@
 'use strict';
 
 (function () {
+  // Создаём объекты с данными
   var authorData = {
     AVATARS: 'img/avatars/user'
   };
