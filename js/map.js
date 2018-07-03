@@ -3,8 +3,6 @@
 // Создаём данные
 var ADS_QUANTITY = 8;
 
-var ESC_KEYCODE = 27;
-
 var mainPinData = {
   sizes: {
     WIDTH: 65,
@@ -20,43 +18,11 @@ var mainPinData = {
   }
 };
 
-var pinSize = {
-  WIDTH: 50,
-  HEIGHT: 70
-};
-
-var translationRealEstateTypes = {
-  palace: 'Дворец',
-  flat: 'Квартира',
-  house: 'Дом',
-  bungalo: 'Бунгало'
-};
-
-var photoElementConfig = {
-  CLASS: 'popup__photo',
-  WIDTH: 45,
-  HEIGHT: 40,
-  ALT: 'Фотография жилья'
-};
-
-var mapPins = [];
-
-var adActive;
-
-var pinActive;
 
 // Находим элементы в разметке и присваиваем их переменным
 var map = document.querySelector('.map');
 
-var template = document.querySelector('template');
-
-var mapPinTemplate = template.content.querySelector('.map__pin');
-
 var similarPinElement = document.querySelector('.map__pins');
-
-var adTemplate = template.content.querySelector('.map__card');
-
-var similarAdElement = document.querySelector('.map__filters-container');
 
 var disabledFieldset = document.querySelectorAll('fieldset');
 
@@ -78,108 +44,6 @@ var getRealEstateAds = function () {
   return realEstateAds;
 };
 
-// Функция, создающая DOM-элемент, соответствующиЙ меткам на карте
-var createPinElement = function (pin) {
-  var pinElement = mapPinTemplate.cloneNode(true);
-
-  pinElement.style = 'left: ' + (pin.location.x - pinSize.WIDTH / 2) + 'px; top: ' + (pin.location.y - pinSize.HEIGHT) + 'px';
-  pinElement.querySelector('img').src = pin.author.avatar;
-  pinElement.querySelector('img').alt = pin.offer.title;
-
-  // Добавляем обработчик события click
-  pinElement.addEventListener('click', function () {
-    showAd(pin);
-    activatePin(pinElement);
-  });
-
-  mapPins.push(pinElement);
-
-  return pinElement;
-};
-
-// Функция, отрисовывающая сгенерированный DOM-элемент меток на карте
-var getRenderPinElement = function (pins) {
-  var fragment = document.createDocumentFragment();
-  pins.forEach(function (item) {
-    fragment.appendChild(createPinElement(item));
-  });
-
-  return fragment;
-};
-
-// Функция, удаляющая все дочерние элементы
-var removeChildElements = function (element) {
-  while (element.firstChild) {
-    element.removeChild(element.firstChild);
-  }
-};
-
-// Функция, возвращающая новый DOM узел (элемент списка)
-var createFeatureElement = function (modifier) {
-  var newFeatureElement = document.createElement('li');
-  newFeatureElement.classList.add('popup__feature', 'popup__feature--' + modifier);
-
-  return newFeatureElement;
-};
-
-// Функция, возвращающая новый DOM узел (изображение)
-var createPhotoElement = function (pathPhoto) {
-  var newPhotoElement = document.createElement('img');
-  newPhotoElement.classList.add(photoElementConfig.CLASS);
-  newPhotoElement.src = pathPhoto;
-  newPhotoElement.style.width = photoElementConfig.WIDTH + 'px';
-  newPhotoElement.style.height = photoElementConfig.HEIGHT + 'px';
-  newPhotoElement.alt = photoElementConfig.ALT;
-
-  return newPhotoElement;
-};
-
-// Функция-обработчик закрытия объявления при нажатии на ESC
-var onAdCloseEsc = function (evt) {
-  if (evt.keyCode === ESC_KEYCODE) {
-    onElementAction();
-  }
-};
-
-// Функция, создающая DOM-элемент, соответствующий объявлениям о недвижимости
-var createAdElement = function (ad) {
-  var adElement = adTemplate.cloneNode(true);
-  var adClose = adElement.querySelector('.popup__close');
-
-  adElement.querySelector('.popup__title').textContent = ad.offer.title;
-  adElement.querySelector('.popup__text--address').textContent = ad.offer.address;
-  adElement.querySelector('.popup__text--price').textContent = ad.offer.price + '₽/ночь';
-  adElement.querySelector('.popup__type').textContent = translationRealEstateTypes[ad.offer.type];
-  adElement.querySelector('.popup__text--capacity').textContent = ad.offer.rooms + ' комнаты для ' + ad.offer.guests + ' гостей';
-  adElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + ad.offer.checkin + ', выезд до ' + ad.offer.checkout;
-
-  var featureParent = adElement.querySelector('.popup__features');
-  removeChildElements(featureParent);
-
-  ad.offer.features.forEach(function (item) {
-    featureParent.appendChild(createFeatureElement(item));
-  });
-
-  adElement.querySelector('.popup__description').textContent = ad.offer.description;
-
-  var photoParent = adElement.querySelector('.popup__photos');
-  removeChildElements(photoParent);
-
-  ad.offer.photos.forEach(function (item) {
-    photoParent.appendChild(createPhotoElement(item));
-  });
-
-  adElement.querySelector('.popup__avatar').src = ad.author.avatar;
-
-  // Добавляем обработчик события click
-  adClose.addEventListener('click', onElementAction);
-
-  // Добавляем обработчик события keydown
-  document.addEventListener('keydown', onAdCloseEsc);
-
-  return adElement;
-};
-
 // Добавляем тегам fieldset атрибут disabled
 var disableFieldsets = function (fieldset) {
   fieldset.forEach(function (item) {
@@ -192,40 +56,6 @@ var enableFieldsets = function (fieldset) {
   fieldset.forEach(function (item) {
     item.disabled = false;
   });
-};
-
-// Функция, вызывающая показ объявления о недвижимости
-var showAd = function (element) {
-  hideAd();
-  adActive = map.insertBefore(createAdElement(element), similarAdElement);
-};
-
-// Функция, скрывающая объявления о недвижимости
-var hideAd = function () {
-  if (adActive) {
-    adActive.remove();
-  }
-};
-
-// Функция, выделяющая активный пин
-var activatePin = function (element) {
-  removeActivePin();
-  pinActive = element;
-  pinActive.classList.add('map__pin--active');
-};
-
-// Функция, снимающая выделение активного пина
-var removeActivePin = function () {
-  if (pinActive) {
-    pinActive.classList.remove('map__pin--active');
-  }
-};
-
-// Функция-обработчик, скрывающая объявление о недвижимости, снимающая выделение активного пина и удаляющая оюработчик события по ESC
-var onElementAction = function () {
-  hideAd();
-  removeActivePin();
-  document.removeEventListener('keydown', onAdCloseEsc);
 };
 
 // Функция, вычисляющая координаты главного пина
@@ -258,7 +88,7 @@ var activatePage = function () {
 
   var realEstateAds = getRealEstateAds();
 
-  similarPinElement.appendChild(getRenderPinElement(realEstateAds));
+  similarPinElement.appendChild(window.pin.getRenderPinElement(realEstateAds));
 
   // Добавляем обработчик события mousedown
   mapPinMain.removeEventListener('mousedown', onPinMainMouseDown);
@@ -292,15 +122,15 @@ var disableForm = function () {
 var disableMap = function () {
   map.classList.add('map--faded');
 
-  mapPins.forEach(function (item) {
+  window.pin.mapPins.forEach(function (item) {
     similarPinElement.removeChild(item);
   });
 
   setAddressField(getPinMainCoordinates());
 
-  mapPins = [];
+  window.pin.mapPins = [];
 
-  onElementAction();
+  window.realEstateAd.onElementAction();
 };
 
 // Функция, возвращающая главный пин в исходное состояние
