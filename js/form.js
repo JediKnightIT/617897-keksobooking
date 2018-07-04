@@ -1,50 +1,6 @@
 'use strict';
 
 (function () {
-  // Создаём объект в глобальной ОВ
-  window.form = {
-    invalidFields: [],
-    // Функция-обработчик, приводящая в соответствие количество комнат с количеством гостей
-    onInputRoomChange: function () {
-      getNumberGuests();
-    },
-    // Функция, выделяющая неверно заполненное поле
-    getInvalidField: function (field) {
-      field.parentNode.classList.add('ad-form__element--invalid-field');
-      window.form.invalidFields.push(field);
-    },
-    // Функция-обработчик, устанавливающая зависимость минимальной цены от типа жилья
-    onInputAdTypeChange: function () {
-      setPriceFromType();
-    },
-    // Добавляем тегам fieldset атрибут disabled
-    disableFieldsets: function (fieldset) {
-      fieldset.forEach(function (item) {
-        item.disabled = true;
-      });
-    },
-    // Убираем у тегов fieldset атрибут disabled
-    enableFieldsets: function (fieldset) {
-      fieldset.forEach(function (item) {
-        item.disabled = false;
-      });
-    },
-    // Функция, отключающая активное состояние формы
-    disableForm: function () {
-      adForm.reset();
-
-      adForm.classList.add('ad-form--disabled');
-
-      window.form.disableFieldsets(disabledFieldset);
-
-      window.form.onInputAdTypeChange();
-
-      window.form.invalidFields.forEach(function (field) {
-        field.parentNode.classList.remove('ad-form__element--invalid-field');
-      });
-    }
-  };
-
   // Создаём словари
   var realEstateTypeToMinPrice = {
     bungalo: 0,
@@ -59,6 +15,8 @@
     '3': ['1', '2', '3'],
     '100': ['0']
   };
+
+  var invalidFields = [];
 
   // Находим элементы в разметке и присваиваем их переменным
   var adForm = document.querySelector('.ad-form');
@@ -81,14 +39,28 @@
 
   var adCapacityOption = adCapacity.querySelectorAll('option');
 
+  var inputAddress = adForm.querySelector('#address');
+
+  // Добавляем тегам fieldset атрибут disabled
+  var disableFieldsets = function (fieldset) {
+    fieldset.forEach(function (item) {
+      item.disabled = true;
+    });
+  };
+
   // Функция, устанавливающая зависимость минимальной цены от типа жилья
   var setPriceFromType = function () {
     adPrice.min = realEstateTypeToMinPrice[adType.value];
     adPrice.placeholder = adPrice.min;
   };
 
+  // Функция-обработчик, устанавливающая зависимость минимальной цены от типа жилья
+  var onInputAdTypeChange = function () {
+    setPriceFromType();
+  };
+
   // Добавляем обработчик события change
-  adType.addEventListener('change', window.form.onInputAdTypeChange);
+  adType.addEventListener('change', onInputAdTypeChange);
 
   // Функция, устанавливающая значение выбранного элемента
   var setElementValue = function (element, evt) {
@@ -122,20 +94,25 @@
     adCapacity.value = selectedOption.includes(adCapacity.value) ? adCapacity.value : selectedOption[0];
   };
 
+  // Функция-обработчик, приводящая в соответствие количество комнат с количеством гостей
+  var onInputRoomChange = function () {
+    getNumberGuests();
+  };
+
   // Добавляем обработчик события change
-  adRoomNumber.addEventListener('change', window.form.onInputRoomChange);
+  adRoomNumber.addEventListener('change', onInputRoomChange);
 
   // Функция, снимающая выделение неверно заполненного поля
   var removeInvalidField = function (field) {
     field.parentNode.classList.remove('ad-form__element--invalid-field');
-    window.form.invalidFields.splice(window.form.invalidFields.indexOf(field), 1);
+    invalidFields.splice(invalidFields.indexOf(field), 1);
   };
 
   // Функция, проверяющая валидность поля при помощи checkValidity
   var checkValidField = function (evt) {
     if (!evt.target.checkValidity()) {
       window.form.getInvalidField(evt.target);
-    } else if (window.form.invalidFields.indexOf(evt.target) !== -1) {
+    } else if (invalidFields.indexOf(evt.target) !== -1) {
       removeInvalidField(evt.target);
     }
   };
@@ -149,4 +126,37 @@
   adTitle.addEventListener('change', onInputFieldValidity);
 
   adPrice.addEventListener('change', onInputFieldValidity);
+
+  // Создаём объект в глобальной ОВ
+  window.form = {
+    // Функция, выделяющая неверно заполненное поле
+    getInvalidField: function (field) {
+      field.parentNode.classList.add('ad-form__element--invalid-field');
+      invalidFields.push(field);
+    },
+    // Убираем у тегов fieldset атрибут disabled
+    enableFieldsets: function (fieldset) {
+      fieldset.forEach(function (item) {
+        item.disabled = false;
+      });
+    },
+    // Функция, отключающая активное состояние формы
+    disable: function () {
+      adForm.reset();
+
+      adForm.classList.add('ad-form--disabled');
+
+      disableFieldsets(disabledFieldset);
+
+      setPriceFromType();
+
+      invalidFields.forEach(function (field) {
+        field.parentNode.classList.remove('ad-form__element--invalid-field');
+      });
+    },
+    // Функция, записывающая координаты в поле ввода адреса
+    setAddressField: function (coordinates) {
+      inputAddress.value = coordinates.x + ', ' + coordinates.y;
+    }
+  };
 })();

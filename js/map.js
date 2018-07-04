@@ -17,44 +17,80 @@
     }
   };
 
+  var ADS_QUANTITY = 8;
+
   // Находим элементы в разметке и присваиваем их переменным
   var map = document.querySelector('.map');
 
-  var similarPinElement = document.querySelector('.map__pins');
+  var adForm = document.querySelector('.ad-form');
 
-  var adFormReset = document.querySelector('.ad-form__reset');
+  var disabledFieldset = document.querySelectorAll('fieldset');
+
+  var similarPinElement = map.querySelector('.map__pins');
+
+  var adFormReset = adForm.querySelector('.ad-form__reset');
 
   var mapPinMain = map.querySelector('.map__pin--main');
+
+  // Функция, возвращающая массив из n сгенерированных объектов. Массив из 8 объявлений о сдаче недвижимости
+  var getRealEstateAds = function () {
+    var realEstateAds = [];
+    for (var i = 0; i < ADS_QUANTITY; i++) {
+      realEstateAds.push(window.getData(i));
+    }
+    return realEstateAds;
+  };
+
+  // Функция, переводящая страницу в активное состояние, создающая DOM-элементы меток и объявлений о сдаче недвижимости
+  var activatePage = function () {
+    map.classList.remove('map--faded');
+    adForm.classList.remove('ad-form--disabled');
+
+    // Убираем атрибут disabled у тега fieldset
+    window.form.enableFieldsets(disabledFieldset);
+
+    var realEstateAds = getRealEstateAds();
+
+    similarPinElement.appendChild(window.pins.getRenderElement(realEstateAds));
+
+    // Добавляем обработчик события mousedown
+    mapPinMain.removeEventListener('mousedown', onPinMainMouseDown);
+
+    adForm.addEventListener('invalid', function (evt) {
+      window.form.getInvalidField(evt.target);
+    }, true);
+  };
+
+  // Функция-обработчик, вызывающая функцию перевода страницы в активное состояние
+  var onPinMainMouseDown = function () {
+    activatePage();
+  };
+
+  // Функция, вычисляющая координаты главного пина
+  var getCoordinates = function () {
+    var pinMainCoordinates = {
+      x: mapPinMain.offsetLeft + mainPinData.sizes.WIDTH / 2,
+      y: mapPinMain.offsetTop + mainPinData.sizes.HEIGHT
+    };
+    return pinMainCoordinates;
+  };
 
   // Функция, возвращающая главный пин в исходное состояние
   var getPinMainInitialState = function () {
     mapPinMain.style.left = mainPinData.coordinates.X + 'px';
     mapPinMain.style.top = mainPinData.coordinates.Y + 'px';
 
-    window.mainPin.setAddressField(window.mainPin.getPinMainCoordinates());
+    window.form.setAddressField(getCoordinates());
 
-    mapPinMain.addEventListener('mousedown', window.page.onPinMainMouseDown);
-  };
-
-  // Функция, отключающая активное состояние карты с пинами
-  var disableMap = function () {
-    map.classList.add('map--faded');
-
-    window.pin.mapPins.forEach(function (item) {
-      similarPinElement.removeChild(item);
-    });
-
-    window.mainPin.setAddressField(window.mainPin.getPinMainCoordinates());
-
-    window.pin.mapPins = [];
-
-    window.realEstateAd.onElementAction();
+    mapPinMain.addEventListener('mousedown', onPinMainMouseDown);
   };
 
   // Функция, отключающая активное состояние страницы
   var disablePageActiveState = function () {
-    window.form.disableForm();
-    disableMap();
+    map.classList.add('map--faded');
+    window.form.disable();
+    window.pins.disable();
+    window.cardPopup.removeActiveElement();
     getPinMainInitialState();
   };
 
@@ -125,7 +161,7 @@
         mapPinMain.style.left = newPosition.x + 'px';
         mapPinMain.style.top = newPosition.y + 'px';
 
-        window.mainPin.setAddressField(window.mainPin.getPinMainCoordinates());
+        window.form.setAddressField(getCoordinates());
       };
 
       // Функция-обработчик, прекращающая перемещение главного пина
@@ -142,5 +178,4 @@
   };
 
   initializePage();
-
 })();

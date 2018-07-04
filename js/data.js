@@ -68,11 +68,11 @@
   };
 
   // Функция, возвращающая сгенерированные данные объекта недвижимости
-  window.getDataObjectRealEstate = function (index) {
+  window.getData = function (index) {
 
   // Присваиваем переменным location сгенерированные координаты месторасположения недвижимости
-    var locationX = window.setup.getRandomIntegerElement(realEstateData.location.X_MIN, realEstateData.location.X_MAX);
-    var locationY = window.setup.getRandomIntegerElement(realEstateData.location.Y_MIN, realEstateData.location.Y_MAX);
+    var locationX = window.utils.getRandomIntegerElement(realEstateData.location.X_MIN, realEstateData.location.X_MAX);
+    var locationY = window.utils.getRandomIntegerElement(realEstateData.location.Y_MIN, realEstateData.location.Y_MAX);
 
     return {
       author: {
@@ -81,13 +81,13 @@
       offer: {
         title: realEstateData.TITLES[index],
         address: locationX + ', ' + locationY,
-        price: window.setup.getRandomIntegerElement(realEstateData.price.MIN, realEstateData.price.MAX),
-        type: window.setup.getRandomArrayElement(realEstateData.TYPES),
-        rooms: window.setup.getRandomIntegerElement(realEstateData.rooms.MIN, realEstateData.rooms.MAX),
-        guests: window.setup.getRandomIntegerElement(realEstateData.guests.MIN, realEstateData.guests.MAX),
-        checkin: window.setup.getRandomArrayElement(realEstateData.CHECKIN_CHECKOUT),
-        checkout: window.setup.getRandomArrayElement(realEstateData.CHECKIN_CHECKOUT),
-        features: window.setup.getArrayStringsRandomLength(realEstateData.FEATURES),
+        price: window.utils.getRandomIntegerElement(realEstateData.price.MIN, realEstateData.price.MAX),
+        type: window.utils.getRandomArrayElement(realEstateData.TYPES),
+        rooms: window.utils.getRandomIntegerElement(realEstateData.rooms.MIN, realEstateData.rooms.MAX),
+        guests: window.utils.getRandomIntegerElement(realEstateData.guests.MIN, realEstateData.guests.MAX),
+        checkin: window.utils.getRandomArrayElement(realEstateData.CHECKIN_CHECKOUT),
+        checkout: window.utils.getRandomArrayElement(realEstateData.CHECKIN_CHECKOUT),
+        features: window.utils.getArrayStringsRandomLength(realEstateData.FEATURES),
         description: '',
         photos: realEstateData.PHOTOS
       },

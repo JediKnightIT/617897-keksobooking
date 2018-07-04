@@ -2,7 +2,7 @@
 
 (function () {
   // Создаём объект в глобальной ОВ
-  window.setup = {
+  window.utils = {
     // Функция, возвращающая случайное целое число от min(включено) до max(включено).
     getRandomIntegerElement: function (min, max) {
       return min + Math.floor(Math.random() * (max + 1 - min));
@@ -15,7 +15,7 @@
 
     // Функция, возвращающая случайную длину массива
     getArrayStringsRandomLength: function (array) {
-      return array.slice(window.setup.getRandomIntegerElement(0, array.length));
+      return array.slice(window.utils.getRandomIntegerElement(0, array.length));
     }
   };
 })();

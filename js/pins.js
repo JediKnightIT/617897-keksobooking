@@ -1,31 +1,13 @@
 'use strict';
 
 (function () {
-  // Создаём объект в глобальной ОВ
-  window.pin = {
-    mapPins: [],
-    // Функция, отрисовывающая сгенерированный DOM-элемент меток на карте
-    getRenderPinElement: function (pins) {
-      var fragment = document.createDocumentFragment();
-      pins.forEach(function (item) {
-        fragment.appendChild(createPinElement(item));
-      });
-
-      return fragment;
-    },
-    // Функция, снимающая выделение активного пина
-    removeActivePin: function () {
-      if (pinActive) {
-        pinActive.classList.remove('map__pin--active');
-      }
-    }
-  };
-
   // Создаём объекты с данными
   var pinSize = {
     WIDTH: 50,
     HEIGHT: 70
   };
+
+  var mapPins = [];
 
   var pinActive;
 
@@ -33,6 +15,9 @@
   var template = document.querySelector('template');
 
   var mapPinTemplate = template.content.querySelector('.map__pin');
+
+  var similarPinElement = document.querySelector('.map__pins');
+
 
   // Функция, создающая DOM-элемент, соответствующиЙ меткам на карте
   var createPinElement = function (pin) {
@@ -44,19 +29,44 @@
 
     // Добавляем обработчик события click
     pinElement.addEventListener('click', function () {
-      window.realEstateAd.showAd(pin);
+      window.cardPopup.show(pin);
       activatePin(pinElement);
     });
 
-    window.pin.mapPins.push(pinElement);
+    mapPins.push(pinElement);
 
     return pinElement;
   };
 
   // Функция, выделяющая активный пин
   var activatePin = function (element) {
-    window.pin.removeActivePin();
+    window.pins.removeActiveElement();
     pinActive = element;
     pinActive.classList.add('map__pin--active');
+  };
+
+  // Создаём объект в глобальной ОВ
+  window.pins = {
+    // Функция, отрисовывающая сгенерированный DOM-элемент меток на карте
+    getRenderElement: function (pins) {
+      var fragment = document.createDocumentFragment();
+      pins.forEach(function (item) {
+        fragment.appendChild(createPinElement(item));
+      });
+      return fragment;
+    },
+    // Функция, снимающая выделение активного пина
+    removeActiveElement: function () {
+      if (pinActive) {
+        pinActive.classList.remove('map__pin--active');
+      }
+    },
+    // Функция, отключающая активное состояние карты с пинами
+    disable: function () {
+      mapPins.forEach(function (item) {
+        similarPinElement.removeChild(item);
+      });
+      mapPins = [];
+    }
   };
 })();
