@@ -102,6 +102,12 @@
   // Добавляем обработчик события change
   adRoomNumber.addEventListener('change', onInputRoomChange);
 
+  // Функция, выделяющая неверно заполненное поле
+  var getInvalidField = function (field) {
+    field.parentNode.classList.add('ad-form__element--invalid-field');
+    invalidFields.push(field);
+  };
+
   // Функция, снимающая выделение неверно заполненного поля
   var removeInvalidField = function (field) {
     field.parentNode.classList.remove('ad-form__element--invalid-field');
@@ -111,7 +117,7 @@
   // Функция, проверяющая валидность поля при помощи checkValidity
   var checkValidField = function (evt) {
     if (!evt.target.checkValidity()) {
-      window.form.getInvalidField(evt.target);
+      getInvalidField(evt.target);
     } else if (invalidFields.indexOf(evt.target) !== -1) {
       removeInvalidField(evt.target);
     }
@@ -129,16 +135,13 @@
 
   // Создаём объект в глобальной ОВ
   window.form = {
-    // Функция, выделяющая неверно заполненное поле
-    getInvalidField: function (field) {
-      field.parentNode.classList.add('ad-form__element--invalid-field');
-      invalidFields.push(field);
-    },
-    // Убираем у тегов fieldset атрибут disabled
-    enableFieldsets: function (fieldset) {
-      fieldset.forEach(function (item) {
-        item.disabled = false;
-      });
+    // Функция, активирующая форму и проверяющая валидность полей формы
+    activate: function () {
+      adForm.classList.remove('ad-form--disabled');
+
+      adForm.addEventListener('invalid', function (evt) {
+        getInvalidField(evt.target);
+      }, true);
     },
     // Функция, отключающая активное состояние формы
     disable: function () {

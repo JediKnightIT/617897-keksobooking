@@ -3,7 +3,8 @@
 (function () {
   // Создаём объекты с данными
   var authorData = {
-    AVATARS: 'img/avatars/user'
+    URL: 'img/avatars/user',
+    EXPANSION: '.png'
   };
 
   var realEstateData = {
@@ -64,12 +65,11 @@
   // Функция, возвращающая путь к расположению аватара
   var getAvatarPath = function (number) {
     var numberAvatar = number > 9 ? number : '0' + number;
-    return authorData.AVATARS + numberAvatar + '.png';
+    return authorData.URL + numberAvatar + authorData.EXPANSION;
   };
 
   // Функция, возвращающая сгенерированные данные объекта недвижимости
   window.getData = function (index) {
-
   // Присваиваем переменным location сгенерированные координаты месторасположения недвижимости
     var locationX = window.utils.getRandomIntegerElement(realEstateData.location.X_MIN, realEstateData.location.X_MAX);
     var locationY = window.utils.getRandomIntegerElement(realEstateData.location.Y_MIN, realEstateData.location.Y_MAX);

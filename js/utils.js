@@ -16,6 +16,12 @@
     // Функция, возвращающая случайную длину массива
     getArrayStringsRandomLength: function (array) {
       return array.slice(window.utils.getRandomIntegerElement(0, array.length));
+    },
+    // Функция, удаляющая все дочерние элементы
+    removeChildElements: function (element) {
+      while (element.firstChild) {
+        element.removeChild(element.firstChild);
+      }
     }
   };
 })();

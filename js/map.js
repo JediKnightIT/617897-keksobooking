@@ -22,13 +22,11 @@
   // Находим элементы в разметке и присваиваем их переменным
   var map = document.querySelector('.map');
 
-  var adForm = document.querySelector('.ad-form');
-
   var disabledFieldset = document.querySelectorAll('fieldset');
 
   var similarPinElement = map.querySelector('.map__pins');
 
-  var adFormReset = adForm.querySelector('.ad-form__reset');
+  var adFormReset = document.querySelector('.ad-form__reset');
 
   var mapPinMain = map.querySelector('.map__pin--main');
 
@@ -41,24 +39,28 @@
     return realEstateAds;
   };
 
+  // Убираем у тегов fieldset атрибут disabled
+  var activateFieldsets = function (fieldset) {
+    fieldset.forEach(function (item) {
+      item.disabled = false;
+    });
+  };
+
   // Функция, переводящая страницу в активное состояние, создающая DOM-элементы меток и объявлений о сдаче недвижимости
   var activatePage = function () {
     map.classList.remove('map--faded');
-    adForm.classList.remove('ad-form--disabled');
 
     // Убираем атрибут disabled у тега fieldset
-    window.form.enableFieldsets(disabledFieldset);
+    activateFieldsets(disabledFieldset);
 
     var realEstateAds = getRealEstateAds();
 
-    similarPinElement.appendChild(window.pins.getRenderElement(realEstateAds));
+    similarPinElement.appendChild(window.pins.createRenderElement(realEstateAds));
 
     // Добавляем обработчик события mousedown
     mapPinMain.removeEventListener('mousedown', onPinMainMouseDown);
 
-    adForm.addEventListener('invalid', function (evt) {
-      window.form.getInvalidField(evt.target);
-    }, true);
+    window.form.activate();
   };
 
   // Функция-обработчик, вызывающая функцию перевода страницы в активное состояние
@@ -90,7 +92,7 @@
     map.classList.add('map--faded');
     window.form.disable();
     window.pins.disable();
-    window.cardPopup.removeActiveElement();
+    window.card.removeActiveElement();
     getPinMainInitialState();
   };
 

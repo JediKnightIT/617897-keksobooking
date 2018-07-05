@@ -29,7 +29,7 @@
 
     // Добавляем обработчик события click
     pinElement.addEventListener('click', function () {
-      window.cardPopup.show(pin);
+      window.card.show(pin);
       activatePin(pinElement);
     });
 
@@ -40,7 +40,7 @@
 
   // Функция, выделяющая активный пин
   var activatePin = function (element) {
-    window.pins.removeActiveElement();
+    window.pins.hideActiveElement();
     pinActive = element;
     pinActive.classList.add('map__pin--active');
   };
@@ -48,7 +48,7 @@
   // Создаём объект в глобальной ОВ
   window.pins = {
     // Функция, отрисовывающая сгенерированный DOM-элемент меток на карте
-    getRenderElement: function (pins) {
+    createRenderElement: function (pins) {
       var fragment = document.createDocumentFragment();
       pins.forEach(function (item) {
         fragment.appendChild(createPinElement(item));
@@ -56,7 +56,7 @@
       return fragment;
     },
     // Функция, снимающая выделение активного пина
-    removeActiveElement: function () {
+    hideActiveElement: function () {
       if (pinActive) {
         pinActive.classList.remove('map__pin--active');
       }

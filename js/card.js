@@ -30,13 +30,6 @@
 
   var similarAdElement = document.querySelector('.map__filters-container');
 
-  // Функция, удаляющая все дочерние элементы
-  var removeChildElements = function (element) {
-    while (element.firstChild) {
-      element.removeChild(element.firstChild);
-    }
-  };
-
   // Функция, возвращающая новый DOM узел (элемент списка)
   var createFeatureElement = function (modifier) {
     var newFeatureElement = document.createElement('li');
@@ -70,7 +63,7 @@
     adElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + ad.offer.checkin + ', выезд до ' + ad.offer.checkout;
 
     var featureParent = adElement.querySelector('.popup__features');
-    removeChildElements(featureParent);
+    window.utils.removeChildElements(featureParent);
 
     ad.offer.features.forEach(function (item) {
       featureParent.appendChild(createFeatureElement(item));
@@ -79,7 +72,7 @@
     adElement.querySelector('.popup__description').textContent = ad.offer.description;
 
     var photoParent = adElement.querySelector('.popup__photos');
-    removeChildElements(photoParent);
+    window.utils.removeChildElements(photoParent);
 
     ad.offer.photos.forEach(function (item) {
       photoParent.appendChild(createPhotoElement(item));
@@ -88,7 +81,9 @@
     adElement.querySelector('.popup__avatar').src = ad.author.avatar;
 
     // Добавляем обработчик события click
-    adClose.addEventListener('click', onElementAction);
+    adClose.addEventListener('click', function () {
+      window.card.removeActiveElement();
+    });
 
     // Добавляем обработчик события keydown
     document.addEventListener('keydown', onAdCloseEsc);
@@ -97,35 +92,30 @@
   };
 
   // Функция, скрывающая объявления о недвижимости
-  var hideCard = function () {
+  var hide = function () {
     if (adActive) {
       adActive.remove();
     }
   };
 
-  // Функция-обработчик, скрывающая объявление о недвижимости, снимающая выделение активного пина и удаляющая обработчик события по ESC
-  var onElementAction = function () {
-    window.cardPopup.removeActiveElement();
-  };
-
   // Функция-обработчик закрытия объявления при нажатии на ESC
   var onAdCloseEsc = function (evt) {
     if (evt.keyCode === ESC_KEYCODE) {
-      onElementAction();
+      window.card.removeActiveElement();
     }
   };
 
   // Создаём объект в глобальной ОВ
-  window.cardPopup = {
+  window.card = {
     // Функция, вызывающая показ объявления о недвижимости
     show: function (element) {
-      hideCard();
+      hide();
       adActive = map.insertBefore(createAdElement(element), similarAdElement);
     },
-    // Функция-обработчик, скрывающая объявление о недвижимости, снимающая выделение активного пина и удаляющая обработчик события по ESC
+    // Функция, скрывающая объявление о недвижимости, удаляющая выделение активного пина и удаляющая обработчик события по ESC
     removeActiveElement: function () {
-      hideCard();
-      window.pins.removeActiveElement();
+      hide();
+      window.pins.hideActiveElement();
       document.removeEventListener('keydown', onAdCloseEsc);
     }
   };
