@@ -31,12 +31,12 @@
   var mapPinMain = map.querySelector('.map__pin--main');
 
   // Функция, возвращающая массив из n сгенерированных объектов. Массив из 8 объявлений о сдаче недвижимости
-  var getRealEstateAds = function () {
-    var realEstateAds = [];
+  var getRealEstateCards = function () {
+    var realEstateCards = [];
     for (var i = 0; i < ADS_QUANTITY; i++) {
-      realEstateAds.push(window.getData(i));
+      realEstateCards.push(window.getData(i));
     }
-    return realEstateAds;
+    return realEstateCards;
   };
 
   // Убираем у тегов fieldset атрибут disabled
@@ -53,9 +53,9 @@
     // Убираем атрибут disabled у тега fieldset
     activateFieldsets(disabledFieldset);
 
-    var realEstateAds = getRealEstateAds();
+    var realEstateCards = getRealEstateCards();
 
-    similarPinElement.appendChild(window.pins.createRenderElement(realEstateAds));
+    similarPinElement.appendChild(window.pins.create(realEstateCards));
 
     // Добавляем обработчик события mousedown
     mapPinMain.removeEventListener('mousedown', onPinMainMouseDown);
@@ -92,7 +92,7 @@
     map.classList.add('map--faded');
     window.form.disable();
     window.pins.disable();
-    window.card.removeActiveElement();
+    window.card.remove();
     getPinMainInitialState();
   };
 

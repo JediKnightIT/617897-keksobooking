@@ -40,7 +40,7 @@
 
   // Функция, выделяющая активный пин
   var activatePin = function (element) {
-    window.pins.hideActiveElement();
+    window.pins.hide();
     pinActive = element;
     pinActive.classList.add('map__pin--active');
   };
@@ -48,7 +48,7 @@
   // Создаём объект в глобальной ОВ
   window.pins = {
     // Функция, отрисовывающая сгенерированный DOM-элемент меток на карте
-    createRenderElement: function (pins) {
+    create: function (pins) {
       var fragment = document.createDocumentFragment();
       pins.forEach(function (item) {
         fragment.appendChild(createPinElement(item));
@@ -56,7 +56,7 @@
       return fragment;
     },
     // Функция, снимающая выделение активного пина
-    hideActiveElement: function () {
+    hide: function () {
       if (pinActive) {
         pinActive.classList.remove('map__pin--active');
       }

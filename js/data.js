@@ -4,7 +4,7 @@
   // Создаём объекты с данными
   var authorData = {
     URL: 'img/avatars/user',
-    EXPANSION: '.png'
+    EXTENSION: '.png'
   };
 
   var realEstateData = {
@@ -42,7 +42,7 @@
       'house',
       'bungalo'
     ],
-    CHECKIN_CHECKOUT: [
+    TIMES: [
       '12:00',
       '13:00',
       '14:00'
@@ -65,7 +65,7 @@
   // Функция, возвращающая путь к расположению аватара
   var getAvatarPath = function (number) {
     var numberAvatar = number > 9 ? number : '0' + number;
-    return authorData.URL + numberAvatar + authorData.EXPANSION;
+    return authorData.URL + numberAvatar + authorData.EXTENSION;
   };
 
   // Функция, возвращающая сгенерированные данные объекта недвижимости
@@ -85,8 +85,8 @@
         type: window.utils.getRandomArrayElement(realEstateData.TYPES),
         rooms: window.utils.getRandomIntegerElement(realEstateData.rooms.MIN, realEstateData.rooms.MAX),
         guests: window.utils.getRandomIntegerElement(realEstateData.guests.MIN, realEstateData.guests.MAX),
-        checkin: window.utils.getRandomArrayElement(realEstateData.CHECKIN_CHECKOUT),
-        checkout: window.utils.getRandomArrayElement(realEstateData.CHECKIN_CHECKOUT),
+        checkin: window.utils.getRandomArrayElement(realEstateData.TIMES),
+        checkout: window.utils.getRandomArrayElement(realEstateData.TIMES),
         features: window.utils.getArrayStringsRandomLength(realEstateData.FEATURES),
         description: '',
         photos: realEstateData.PHOTOS

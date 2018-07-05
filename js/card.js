@@ -12,23 +12,23 @@
     bungalo: 'Бунгало'
   };
 
-  var photoElementConfig = {
+  var photoElementData = {
     CLASS: 'popup__photo',
     WIDTH: 45,
     HEIGHT: 40,
     ALT: 'Фотография жилья'
   };
 
-  var adActive;
+  var cardActive;
 
   // Находим элементы в разметке и присваиваем их переменным
   var map = document.querySelector('.map');
 
   var template = document.querySelector('template');
 
-  var adTemplate = template.content.querySelector('.map__card');
+  var cardTemplate = template.content.querySelector('.map__card');
 
-  var similarAdElement = document.querySelector('.map__filters-container');
+  var similarCardElement = document.querySelector('.map__filters-container');
 
   // Функция, возвращающая новый DOM узел (элемент списка)
   var createFeatureElement = function (modifier) {
@@ -41,67 +41,67 @@
   // Функция, возвращающая новый DOM узел (изображение)
   var createPhotoElement = function (pathPhoto) {
     var newPhotoElement = document.createElement('img');
-    newPhotoElement.classList.add(photoElementConfig.CLASS);
+    newPhotoElement.classList.add(photoElementData.CLASS);
     newPhotoElement.src = pathPhoto;
-    newPhotoElement.style.width = photoElementConfig.WIDTH + 'px';
-    newPhotoElement.style.height = photoElementConfig.HEIGHT + 'px';
-    newPhotoElement.alt = photoElementConfig.ALT;
+    newPhotoElement.style.width = photoElementData.WIDTH + 'px';
+    newPhotoElement.style.height = photoElementData.HEIGHT + 'px';
+    newPhotoElement.alt = photoElementData.ALT;
 
     return newPhotoElement;
   };
 
   // Функция, создающая DOM-элемент, соответствующий объявлениям о недвижимости
-  var createAdElement = function (ad) {
-    var adElement = adTemplate.cloneNode(true);
-    var adClose = adElement.querySelector('.popup__close');
+  var createCardElement = function (card) {
+    var cardElement = cardTemplate.cloneNode(true);
+    var cardClose = cardElement.querySelector('.popup__close');
 
-    adElement.querySelector('.popup__title').textContent = ad.offer.title;
-    adElement.querySelector('.popup__text--address').textContent = ad.offer.address;
-    adElement.querySelector('.popup__text--price').textContent = ad.offer.price + '₽/ночь';
-    adElement.querySelector('.popup__type').textContent = translationRealEstateTypes[ad.offer.type];
-    adElement.querySelector('.popup__text--capacity').textContent = ad.offer.rooms + ' комнаты для ' + ad.offer.guests + ' гостей';
-    adElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + ad.offer.checkin + ', выезд до ' + ad.offer.checkout;
+    cardElement.querySelector('.popup__title').textContent = card.offer.title;
+    cardElement.querySelector('.popup__text--address').textContent = card.offer.address;
+    cardElement.querySelector('.popup__text--price').textContent = card.offer.price + '₽/ночь';
+    cardElement.querySelector('.popup__type').textContent = translationRealEstateTypes[card.offer.type];
+    cardElement.querySelector('.popup__text--capacity').textContent = card.offer.rooms + ' комнаты для ' + card.offer.guests + ' гостей';
+    cardElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + card.offer.checkin + ', выезд до ' + card.offer.checkout;
 
-    var featureParent = adElement.querySelector('.popup__features');
+    var featureParent = cardElement.querySelector('.popup__features');
     window.utils.removeChildElements(featureParent);
 
-    ad.offer.features.forEach(function (item) {
+    card.offer.features.forEach(function (item) {
       featureParent.appendChild(createFeatureElement(item));
     });
 
-    adElement.querySelector('.popup__description').textContent = ad.offer.description;
+    cardElement.querySelector('.popup__description').textContent = card.offer.description;
 
-    var photoParent = adElement.querySelector('.popup__photos');
+    var photoParent = cardElement.querySelector('.popup__photos');
     window.utils.removeChildElements(photoParent);
 
-    ad.offer.photos.forEach(function (item) {
+    card.offer.photos.forEach(function (item) {
       photoParent.appendChild(createPhotoElement(item));
     });
 
-    adElement.querySelector('.popup__avatar').src = ad.author.avatar;
+    cardElement.querySelector('.popup__avatar').src = card.author.avatar;
 
     // Добавляем обработчик события click
-    adClose.addEventListener('click', function () {
-      window.card.removeActiveElement();
+    cardClose.addEventListener('click', function () {
+      window.card.remove();
     });
 
     // Добавляем обработчик события keydown
-    document.addEventListener('keydown', onAdCloseEsc);
+    document.addEventListener('keydown', onCardCloseEsc);
 
-    return adElement;
+    return cardElement;
   };
 
   // Функция, скрывающая объявления о недвижимости
   var hide = function () {
-    if (adActive) {
-      adActive.remove();
+    if (cardActive) {
+      cardActive.remove();
     }
   };
 
   // Функция-обработчик закрытия объявления при нажатии на ESC
-  var onAdCloseEsc = function (evt) {
+  var onCardCloseEsc = function (evt) {
     if (evt.keyCode === ESC_KEYCODE) {
-      window.card.removeActiveElement();
+      window.card.remove();
     }
   };
 
@@ -110,13 +110,13 @@
     // Функция, вызывающая показ объявления о недвижимости
     show: function (element) {
       hide();
-      adActive = map.insertBefore(createAdElement(element), similarAdElement);
+      cardActive = map.insertBefore(createCardElement(element), similarCardElement);
     },
     // Функция, скрывающая объявление о недвижимости, удаляющая выделение активного пина и удаляющая обработчик события по ESC
-    removeActiveElement: function () {
+    remove: function () {
       hide();
-      window.pins.hideActiveElement();
-      document.removeEventListener('keydown', onAdCloseEsc);
+      window.pins.hide();
+      document.removeEventListener('keydown', onCardCloseEsc);
     }
   };
 })();
