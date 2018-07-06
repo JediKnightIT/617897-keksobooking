@@ -1,121 +1,165 @@
 'use strict';
-// Создаём словари
-var realEstateTypeToMinPrice = {
-  bungalo: 0,
-  flat: 1000,
-  house: 5000,
-  palace: 10000
-};
 
-var roomToGuest = {
-  '1': ['1'],
-  '2': ['1', '2'],
-  '3': ['1', '2', '3'],
-  '100': ['0']
-};
+(function () {
+  // Создаём словари
+  var realEstateTypeToMinPrice = {
+    bungalo: 0,
+    flat: 1000,
+    house: 5000,
+    palace: 10000
+  };
 
-var invalidFields = [];
+  var roomToGuest = {
+    '1': ['1'],
+    '2': ['1', '2'],
+    '3': ['1', '2', '3'],
+    '100': ['0']
+  };
 
-// Находим элементы в разметке и присваиваем их переменным
-var adForm = document.querySelector('.ad-form');
+  var invalidFields = [];
 
-var adTitle = adForm.querySelector('#title');
+  // Находим элементы в разметке и присваиваем их переменным
+  var adForm = document.querySelector('.ad-form');
 
-var adType = adForm.querySelector('#type');
+  var disabledFieldset = document.querySelectorAll('fieldset');
 
-var adPrice = adForm.querySelector('#price');
+  var adTitle = adForm.querySelector('#title');
 
-var adTimeIn = adForm.querySelector('#timein');
+  var adType = adForm.querySelector('#type');
 
-var adTimeOut = adForm.querySelector('#timeout');
+  var adPrice = adForm.querySelector('#price');
 
-var adRoomNumber = adForm.querySelector('#room_number');
+  var adTimeIn = adForm.querySelector('#timein');
 
-var adCapacity = adForm.querySelector('#capacity');
+  var adTimeOut = adForm.querySelector('#timeout');
 
-var adCapacityOption = adCapacity.querySelectorAll('option');
+  var adRoomNumber = adForm.querySelector('#room_number');
 
-// Функция, устанавливающая зависимость минимальной цены от типа жилья
-var setPriceFromType = function () {
-  adPrice.min = realEstateTypeToMinPrice[adType.value];
-  adPrice.placeholder = adPrice.min;
-};
+  var adCapacity = adForm.querySelector('#capacity');
 
-// Функция-обработчик, устанавливающая зависимость минимальной цены от типа жилья
-var onInputAdTypeChange = function () {
-  setPriceFromType();
-};
+  var adCapacityOption = adCapacity.querySelectorAll('option');
 
-// Добавляем обработчик события change
-adType.addEventListener('change', onInputAdTypeChange);
+  var inputAddress = adForm.querySelector('#address');
 
-// Функция, устанавливающая значение выбранного элемента
-var setElementValue = function (element, evt) {
-  element.value = evt.target.value;
-};
+  // Добавляем тегам fieldset атрибут disabled
+  var disableFieldsets = function (fieldset) {
+    fieldset.forEach(function (item) {
+      item.disabled = true;
+    });
+  };
 
-// Функция-обработчик, синхронизирующая время заезда и выезда
-var onInputTimeInChange = function (evt) {
-  setElementValue(adTimeOut, evt);
-};
+  // Функция, устанавливающая зависимость минимальной цены от типа жилья
+  var setPriceFromType = function () {
+    adPrice.min = realEstateTypeToMinPrice[adType.value];
+    adPrice.placeholder = adPrice.min;
+  };
 
-// Добавляем обработчик события change
-adTimeIn.addEventListener('change', onInputTimeInChange);
+  // Функция-обработчик, устанавливающая зависимость минимальной цены от типа жилья
+  var onInputAdTypeChange = function () {
+    setPriceFromType();
+  };
 
-// Функция-обработчик, синхронизирующая время выезда и заезда
-var onInputTimeOutChange = function (evt) {
-  setElementValue(adTimeIn, evt);
-};
+  // Добавляем обработчик события change
+  adType.addEventListener('change', onInputAdTypeChange);
 
-// Добавляем обработчик события change
-adTimeOut.addEventListener('change', onInputTimeOutChange);
+  // Функция, устанавливающая значение выбранного элемента
+  var setElementValue = function (element, evt) {
+    element.value = evt.target.value;
+  };
 
-// Функция выбора вариантов соответствия количество комнат - количество мест
-var getNumberGuests = function () {
-  var selectedOption = roomToGuest[adRoomNumber.value];
+  // Функция-обработчик, синхронизирующая время заезда и выезда
+  var onInputTimeInChange = function (evt) {
+    setElementValue(adTimeOut, evt);
+  };
 
-  adCapacityOption.forEach(function (item) {
-    item.disabled = !selectedOption.includes(item.value);
-  });
+  // Добавляем обработчик события change
+  adTimeIn.addEventListener('change', onInputTimeInChange);
 
-  adCapacity.value = selectedOption.includes(adCapacity.value) ? adCapacity.value : selectedOption[0];
-};
+  // Функция-обработчик, синхронизирующая время выезда и заезда
+  var onInputTimeOutChange = function (evt) {
+    setElementValue(adTimeIn, evt);
+  };
 
-// Функция-обработчик, приводящая в соответствие количество комнат с количеством гостей
-var onInputRoomChange = function () {
-  getNumberGuests();
-};
+  // Добавляем обработчик события change
+  adTimeOut.addEventListener('change', onInputTimeOutChange);
 
-// Добавляем обработчик события change
-adRoomNumber.addEventListener('change', onInputRoomChange);
+  // Функция выбора вариантов соответствия количество комнат - количество мест
+  var getNumberGuests = function () {
+    var selectedOption = roomToGuest[adRoomNumber.value];
 
-// Функция, выделяющая неверно заполненное поле
-var getInvalidField = function (field) {
-  field.parentNode.classList.add('ad-form__element--invalid-field');
-  invalidFields.push(field);
-};
+    adCapacityOption.forEach(function (item) {
+      item.disabled = !selectedOption.includes(item.value);
+    });
 
-// Функция, снимающая выделение неверно заполненного поля
-var removeInvalidField = function (field) {
-  field.parentNode.classList.remove('ad-form__element--invalid-field');
-  invalidFields.splice(invalidFields.indexOf(field), 1);
-};
+    adCapacity.value = selectedOption.includes(adCapacity.value) ? adCapacity.value : selectedOption[0];
+  };
 
-// Функция, проверяющая валидность поля при помощи checkValidity
-var checkValidField = function (evt) {
-  if (!evt.target.checkValidity()) {
-    getInvalidField(evt.target);
-  } else if (invalidFields.indexOf(evt.target) !== -1) {
-    removeInvalidField(evt.target);
-  }
-};
+  // Функция-обработчик, приводящая в соответствие количество комнат с количеством гостей
+  var onInputRoomChange = function () {
+    getNumberGuests();
+  };
 
-// Функция-обработчик, осуществляющая проверку валидности поля формы
-var onInputFieldValidity = function (evt) {
-  checkValidField(evt);
-};
+  // Добавляем обработчик события change
+  adRoomNumber.addEventListener('change', onInputRoomChange);
 
-// Добавляем обработчик события change
-adTitle.addEventListener('change', onInputFieldValidity);
+  // Функция, выделяющая неверно заполненное поле
+  var getInvalidField = function (field) {
+    field.parentNode.classList.add('ad-form__element--invalid-field');
+    invalidFields.push(field);
+  };
 
-adPrice.addEventListener('change', onInputFieldValidity);
+  // Функция, снимающая выделение неверно заполненного поля
+  var removeInvalidField = function (field) {
+    field.parentNode.classList.remove('ad-form__element--invalid-field');
+    invalidFields.splice(invalidFields.indexOf(field), 1);
+  };
+
+  // Функция, проверяющая валидность поля при помощи checkValidity
+  var checkValidField = function (evt) {
+    if (!evt.target.checkValidity()) {
+      getInvalidField(evt.target);
+    } else if (invalidFields.indexOf(evt.target) !== -1) {
+      removeInvalidField(evt.target);
+    }
+  };
+
+  // Функция-обработчик, осуществляющая проверку валидности поля формы
+  var onInputFieldValidity = function (evt) {
+    checkValidField(evt);
+  };
+
+  // Добавляем обработчик события change
+  adTitle.addEventListener('change', onInputFieldValidity);
+
+  adPrice.addEventListener('change', onInputFieldValidity);
+
+  // Создаём объект в глобальной ОВ
+  window.form = {
+    // Функция, активирующая форму и проверяющая валидность полей формы
+    activate: function () {
+      adForm.classList.remove('ad-form--disabled');
+
+      adForm.addEventListener('invalid', function (evt) {
+        getInvalidField(evt.target);
+      }, true);
+    },
+    // Функция, отключающая активное состояние формы
+    disable: function () {
+      adForm.reset();
+
+      adForm.classList.add('ad-form--disabled');
+
+      disableFieldsets(disabledFieldset);
+
+      setPriceFromType();
+
+      invalidFields.forEach(function (field) {
+        field.parentNode.classList.remove('ad-form__element--invalid-field');
+      });
+    },
+    // Функция, записывающая координаты в поле ввода адреса
+    setAddressField: function (coordinates) {
+      inputAddress.value = coordinates.x + ', ' + coordinates.y;
+    }
+  };
+})();
