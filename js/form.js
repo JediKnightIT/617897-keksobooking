@@ -61,9 +61,6 @@
     setPriceFromType();
   };
 
-  // Добавляем обработчик события change
-  adType.addEventListener('change', onInputAdTypeChange);
-
   // Функция, устанавливающая значение выбранного элемента
   var setElementValue = function (element, evt) {
     element.value = evt.target.value;
@@ -74,16 +71,10 @@
     setElementValue(adTimeOut, evt);
   };
 
-  // Добавляем обработчик события change
-  adTimeIn.addEventListener('change', onInputTimeInChange);
-
   // Функция-обработчик, синхронизирующая время выезда и заезда
   var onInputTimeOutChange = function (evt) {
     setElementValue(adTimeIn, evt);
   };
-
-  // Добавляем обработчик события change
-  adTimeOut.addEventListener('change', onInputTimeOutChange);
 
   // Функция выбора вариантов соответствия количество комнат - количество мест
   var getNumberGuests = function () {
@@ -101,13 +92,15 @@
     getNumberGuests();
   };
 
-  // Добавляем обработчик события change
-  adRoomNumber.addEventListener('change', onInputRoomChange);
-
   // Функция, выделяющая неверно заполненное поле
   var getInvalidField = function (field) {
     field.parentNode.classList.add('ad-form__element--invalid-field');
     invalidFields.push(field);
+  };
+
+  // Функция-обработчик, осуществляющая проверку валидности формы
+  var onInvalidForm = function (evt) {
+    getInvalidField(evt.target);
   };
 
   // Функция, снимающая выделение неверно заполненного поля
@@ -129,11 +122,6 @@
   var onInputFieldValidity = function (evt) {
     checkValidField(evt);
   };
-
-  // Добавляем обработчик события change
-  adTitle.addEventListener('change', onInputFieldValidity);
-
-  adPrice.addEventListener('change', onInputFieldValidity);
 
   // Функция, закрывающая сообщение об успешной отправке формы
   var closeSuccessMessage = function () {
@@ -167,15 +155,42 @@
     window.createErrorMessage(message);
   };
 
+  // Функция-обработчик, отправляющая данные на сервер
+  var onFormSubmitClick = function (evt) {
+    evt.preventDefault();
+    // Создаём новый объект FormData
+    var formData = new FormData(adForm);
+    window.backend.upload(onLoadSuccess, onLoadError, formData);
+  };
+
+  var addFormListeners = function () {
+    adType.addEventListener('change', onInputAdTypeChange);
+    adTimeIn.addEventListener('change', onInputTimeInChange);
+    adTimeOut.addEventListener('change', onInputTimeOutChange);
+    adRoomNumber.addEventListener('change', onInputRoomChange);
+    adTitle.addEventListener('change', onInputFieldValidity);
+    adPrice.addEventListener('change', onInputFieldValidity);
+    adForm.addEventListener('invalid', onInvalidForm, true);
+    adForm.addEventListener('submit', onFormSubmitClick);
+  };
+
+  var removeFormListeners = function () {
+    adType.removeEventListener('change', onInputAdTypeChange);
+    adTimeIn.removeEventListener('change', onInputTimeInChange);
+    adTimeOut.removeEventListener('change', onInputTimeOutChange);
+    adRoomNumber.removeEventListener('change', onInputRoomChange);
+    adTitle.removeEventListener('change', onInputFieldValidity);
+    adPrice.removeEventListener('change', onInputFieldValidity);
+    adForm.removeEventListener('invalid', onInvalidForm, true);
+    adForm.removeEventListener('submit', onFormSubmitClick);
+  };
+
   // Создаём объект в глобальной ОВ
   window.form = {
     // Функция, активирующая форму и проверяющая валидность полей формы
     activate: function () {
       adForm.classList.remove('ad-form--disabled');
-
-      adForm.addEventListener('invalid', function (evt) {
-        getInvalidField(evt.target);
-      }, true);
+      addFormListeners();
     },
     // Функция, отключающая активное состояние формы
     disable: function () {
@@ -190,6 +205,8 @@
       invalidFields.forEach(function (field) {
         field.parentNode.classList.remove('ad-form__element--invalid-field');
       });
+
+      removeFormListeners();
     },
     // Функция, записывающая координаты в поле ввода адреса
     setAddressField: function (coordinates) {
