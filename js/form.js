@@ -41,6 +41,8 @@
 
   var inputAddress = adForm.querySelector('#address');
 
+  var successMessage = document.querySelector('.success');
+
   // Добавляем тегам fieldset атрибут disabled
   var disableFieldsets = function (fieldset) {
     fieldset.forEach(function (item) {
@@ -132,6 +134,34 @@
   adTitle.addEventListener('change', onInputFieldValidity);
 
   adPrice.addEventListener('change', onInputFieldValidity);
+
+  // Функция, закрывающая сообщение об успешной отправке формы
+  var closeSuccessMessage = function () {
+    successMessage.classList.add('hidden');
+    document.removeEventListener('click', onSuccessWindowClick);
+    document.removeEventListener('keydown', onSuccessEscPress);
+  };
+
+  // Функция-обработчик, закрывающая сообщение об успешной отправке формы по клику
+  var onSuccessWindowClick = function () {
+    closeSuccessMessage();
+  };
+
+  // Функция-обработчик, закрывающая сообщение об успешной отправке формы по нажатия на ESC
+  var onSuccessEscPress = function (evt) {
+    if (evt.keyCode === ESC_KEYCODE) {
+      closeSuccessMessage();
+    }
+  };
+
+  // Функция-обработчик, успешной отправки данных формы
+  var onLoadSuccess = function () {
+    window.form.disable();
+    successMessage.classList.remove('hidden');
+    document.addEventListener('click', onSuccessWindowClick);
+    document.addEventListener('keydown', onSuccessEscPress);
+  };
+
 
   // Создаём объект в глобальной ОВ
   window.form = {
