@@ -162,7 +162,6 @@
     document.addEventListener('keydown', onSuccessEscPress);
   };
 
-
   // Создаём объект в глобальной ОВ
   window.form = {
     // Функция, активирующая форму и проверяющая валидность полей формы
