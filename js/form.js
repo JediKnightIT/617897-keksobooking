@@ -141,16 +141,16 @@
   };
 
   // Функция-обработчик, успешной отправки данных формы
-  var onLoadSuccess = function () {
-    window.form.disable();
+  var onUploadSuccess = function () {
+    window.map.disablePageActiveState();
     successMessage.classList.remove('hidden');
     document.addEventListener('click', onSuccessWindowClick);
     document.addEventListener('keydown', onSuccessEscPress);
   };
 
   // Функция-обработчик, возникающая при ошибке отправки данных формы
-  var onLoadError = function (message) {
-    window.createErrorMessage(message);
+  var onUploadError = function (message) {
+    window.error.createMessage(message);
   };
 
   // Функция-обработчик, отправляющая данные на сервер
@@ -158,7 +158,7 @@
     evt.preventDefault();
     // Создаём новый объект FormData
     var formData = new FormData(adForm);
-    window.backend.upload(onLoadSuccess, onLoadError, formData);
+    window.backend.upload(onUploadSuccess, onUploadError, formData);
   };
 
   var addFormListeners = function () {

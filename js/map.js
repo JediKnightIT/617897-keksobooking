@@ -24,9 +24,9 @@
 
   var mapPins = map.querySelector('.map__pins');
 
-  var adFormReset = document.querySelector('.ad-form__reset');
-
   var mapPinMain = map.querySelector('.map__pin--main');
+
+  var adFormReset = document.querySelector('.ad-form__reset');
 
   // Убираем у тегов fieldset атрибут disabled
   var activateFieldsets = function (fieldset) {
@@ -45,9 +45,9 @@
     mapPins.appendChild(fragment);
   };
 
-  // Функция-обработчик, возникающая при загрузке данных с сервера
+  // Функция-обработчик, при возникновении ошибки загрузки данных с сервера
   var onLoadError = function (message) {
-    window.createErrorMessage(message);
+    window.error.createMessage(message);
   };
 
   // Функция, переводящая страницу в активное состояние, создающая DOM-элементы меток и объявлений о сдаче недвижимости
@@ -183,4 +183,8 @@
   };
 
   initializePage();
+
+  window.map = {
+    disablePageActiveState: disablePageActiveState
+  };
 })();
