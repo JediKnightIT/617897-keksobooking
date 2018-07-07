@@ -162,6 +162,11 @@
     document.addEventListener('keydown', onSuccessEscPress);
   };
 
+  // Функция-обработчик, возникающая при ошибке отправки данных формы
+  var onLoadError = function (message) {
+    window.createErrorMessage(message);
+  };
+
   // Создаём объект в глобальной ОВ
   window.form = {
     // Функция, активирующая форму и проверяющая валидность полей формы
