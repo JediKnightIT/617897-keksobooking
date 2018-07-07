@@ -38,13 +38,5 @@
     // Отправка данных
     xhr.send(data ? data : '');
   };
-  // Создаём объект в глобальной ОВ
-  window.backend = {
-    load: function (onLoad, onError) {
-      createXHR('GET', urlType.LOAD, onLoad, onError);
-    },
-    upload: function (onLoad, onError, data) {
-      createXHR('POST', urlType.UPLOAD, onLoad, onError, data);
-    }
-  };
+
 })();
