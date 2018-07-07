@@ -137,9 +137,7 @@
 
   // Функция-обработчик, закрывающая сообщение об успешной отправке формы по нажатия на ESC
   var onSuccessEscPress = function (evt) {
-    if (evt.keyCode === ESC_KEYCODE) {
-      closeSuccessMessage();
-    }
+    window.utils.pressEsc(evt, closeSuccessMessage);
   };
 
   // Функция-обработчик, успешной отправки данных формы
