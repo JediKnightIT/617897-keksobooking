@@ -3,8 +3,8 @@
 (function () {
   // Создаём объекты с данными
   var urlType = {
-    LOAD: 'https://js.dump.academy/keksobooking',
-    UPLOAD: 'https://js.dump.academy/keksobooking/data'
+    LOAD: 'https://js.dump.academy/keksobooking/data',
+    UPLOAD: 'https://js.dump.academy/keksobooking'
   };
 
   // Функция, создающая запрос к серверу
