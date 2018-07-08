@@ -18,4 +18,12 @@
   };
 
   var PIN_QUANTITY = 5;
+
+  // Находим элементы в разметке и присваиваем их переменным
+  var filter = document.querySelector('.map__filters');
+  var type = filter.querySelector('#housing-type');
+  var price = filter.querySelector('#housing-price');
+  var rooms = filter.querySelector('#housing-rooms');
+  var guests = filter.querySelector('#housing-guests');
+  var features = filter.querySelector('#housing-features');
 })();
