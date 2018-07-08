@@ -1,9 +1,6 @@
 'use strict';
 
 (function () {
-  // Создаём переменную с кодом клавиши ESC
-  var ESC_KEYCODE = 27;
-
   // Создаём объекты с данными
   var translationRealEstateTypes = {
     palace: 'Дворец',
@@ -100,9 +97,7 @@
 
   // Функция-обработчик закрытия объявления при нажатии на ESC
   var onCardCloseEsc = function (evt) {
-    if (evt.keyCode === ESC_KEYCODE) {
-      window.card.remove();
-    }
+    window.utils.pressEsc(evt, window.card.remove);
   };
 
   // Создаём объект в глобальной ОВ

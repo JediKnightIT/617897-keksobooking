@@ -17,27 +17,16 @@
     }
   };
 
-  var ADS_QUANTITY = 8;
-
   // Находим элементы в разметке и присваиваем их переменным
   var map = document.querySelector('.map');
 
   var disabledFieldset = document.querySelectorAll('fieldset');
 
-  var similarPinElement = map.querySelector('.map__pins');
-
-  var adFormReset = document.querySelector('.ad-form__reset');
+  var mapPins = map.querySelector('.map__pins');
 
   var mapPinMain = map.querySelector('.map__pin--main');
 
-  // Функция, возвращающая массив из n сгенерированных объектов. Массив из 8 объявлений о сдаче недвижимости
-  var getRealEstateCards = function () {
-    var realEstateCards = [];
-    for (var i = 0; i < ADS_QUANTITY; i++) {
-      realEstateCards.push(window.getData(i));
-    }
-    return realEstateCards;
-  };
+  var adFormReset = document.querySelector('.ad-form__reset');
 
   // Убираем у тегов fieldset атрибут disabled
   var activateFieldsets = function (fieldset) {
@@ -46,16 +35,30 @@
     });
   };
 
+  // Функция-обработчик, отрисовывающая DOM-элемент меток на карте
+  var onLoadSuccess = function (data) {
+    var fragment = document.createDocumentFragment();
+    data.forEach(function (item) {
+      var pin = window.pins.create(item);
+      fragment.appendChild(pin);
+    });
+    mapPins.appendChild(fragment);
+  };
+
+  // Функция-обработчик, при возникновении ошибки загрузки данных с сервера
+  var onLoadError = function (message) {
+    window.error.createMessage(message);
+  };
+
   // Функция, переводящая страницу в активное состояние, создающая DOM-элементы меток и объявлений о сдаче недвижимости
   var activatePage = function () {
+    // Загружаем данные с сервера
+    window.backend.load(onLoadSuccess, onLoadError);
+
     map.classList.remove('map--faded');
 
     // Убираем атрибут disabled у тега fieldset
     activateFieldsets(disabledFieldset);
-
-    var realEstateCards = getRealEstateCards();
-
-    similarPinElement.appendChild(window.pins.create(realEstateCards));
 
     // Добавляем обработчик события mousedown
     mapPinMain.removeEventListener('mousedown', onPinMainMouseDown);
@@ -180,4 +183,8 @@
   };
 
   initializePage();
+
+  window.map = {
+    disablePageActiveState: disablePageActiveState
+  };
 })();
