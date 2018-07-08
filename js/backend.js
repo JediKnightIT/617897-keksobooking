@@ -2,10 +2,12 @@
 
 (function () {
   // Создаём объекты с данными
-  var urlType = {
+  var UrlTypes = {
     LOAD: 'https://js.dump.academy/keksobooking/data',
     UPLOAD: 'https://js.dump.academy/keksobooking'
   };
+
+  var SUCCESS_CODE = 200;
 
   // Функция, создающая запрос к серверу
   var createXHR = function (method, url, onLoad, onError, data) {
@@ -17,7 +19,6 @@
     }
     // Добавляем обработчик события load
     xhr.addEventListener('load', function () {
-      var SUCCESS_CODE = 200;
       // Выполняем проверку статуса запроса
       if (xhr.status === SUCCESS_CODE) {
         onLoad(xhr.response);
@@ -41,10 +42,10 @@
   // Создаём объект в глобальной ОВ
   window.backend = {
     load: function (onLoad, onError) {
-      createXHR('GET', urlType.LOAD, onLoad, onError);
+      createXHR('GET', UrlTypes.LOAD, onLoad, onError);
     },
     upload: function (onLoad, onError, data) {
-      createXHR('POST', urlType.UPLOAD, onLoad, onError, data);
+      createXHR('POST', UrlTypes.UPLOAD, onLoad, onError, data);
     }
   };
 })();
