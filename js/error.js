@@ -2,7 +2,7 @@
 
 (function () {
   var node = document.createElement('div');
-  var timeout = 5000;
+  var TIMEOUT = 5000;
   // Создаём DOM-элемент, показывающий сообщение об ошибке
   var createErrorMessage = function (text) {
     node.classList.add('error');
@@ -10,7 +10,7 @@
     document.body.appendChild(node);
     setTimeout(function () {
       document.body.removeChild(node);
-    }, timeout);
+    }, TIMEOUT);
   };
 
   window.error = {
