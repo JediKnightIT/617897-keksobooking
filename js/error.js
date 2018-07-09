@@ -1,8 +1,10 @@
 'use strict';
 
 (function () {
-  var node = document.createElement('div');
+  // Создаём структуру данных
   var TIMEOUT = 5000;
+
+  var node = document.createElement('div');
   // Создаём DOM-элемент, показывающий сообщение об ошибке
   var createErrorMessage = function (text) {
     node.classList.add('error');
@@ -13,6 +15,7 @@
     }, TIMEOUT);
   };
 
+  // Создаём объект в глобальной ОВ
   window.error = {
     createMessage: createErrorMessage
   };

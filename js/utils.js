@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-  // Создаём константы
+  // Создаём структуру данных
   var ESC_KEYCODE = 27;
 
   var DEBOUNCE_INTERVAL = 500;

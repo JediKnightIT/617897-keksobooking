@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-  // Создаём объекты с данными
+  // Создаём структуру данных
   var pinSize = {
     WIDTH: 50,
     HEIGHT: 70

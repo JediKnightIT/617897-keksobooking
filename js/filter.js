@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-  // Создаём данные
+  // Создаём структуру данных
   var priceRange = {
     low: {
       MIN: 0,
@@ -26,7 +26,6 @@
   var rooms = filter.querySelector('#housing-rooms');
   var guests = filter.querySelector('#housing-guests');
   var features = filter.querySelector('#housing-features');
-  var checkedElement = features.querySelector('input:checked');
   var filterElements = filter.querySelectorAll('select, input');
 
   var defaultData = [];
@@ -60,6 +59,8 @@
 
   // Функция, фильтрующая перечень удобств
   var selectFilterFeatures = function (item) {
+    var checkedElement = features.querySelectorAll('input:checked');
+
     return Array.from(checkedElement).every(function (element) {
       return item.offer.features.includes(element.value);
     });

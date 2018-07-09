@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-  // Создаём объекты с данными
+  // Создаём структуру данных
   var mainPinData = {
     sizes: {
       WIDTH: 65,
@@ -45,6 +45,7 @@
     mapPins.appendChild(fragment);
   };
 
+  // Функция-обработчик, отрисовывающая DOM-элемент меток на карте
   var onLoadSuccess = function (data) {
     createMapPins(window.filter.activate(data));
   };
