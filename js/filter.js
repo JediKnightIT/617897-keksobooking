@@ -64,4 +64,22 @@
     });
   };
 
+  // Функция, фильтрующая поля формы
+  var filterFormFields = function () {
+    filteredData = defaultData.slice();
+    filteredData = filteredData.filter(selectFilterType);
+    filteredData = filteredData.filter(selectFilterPrice);
+    filteredData = filteredData.filter(selectFilterRooms);
+    filteredData = filteredData.filter(selectFilterGuests);
+    filteredData = filteredData.filter(selectFilterFeatures);
+  };
+
+  // Функция-обработчик, организующая работу фильтрации полей формы
+  var onFormInputChange = window.utils.debounce(function () {
+    filterFormFields();
+    window.card.remove();
+    window.pins.disable();
+    window.map.create(filteredData.slice(0, PIN_QUANTITY));
+  });
+
 })();
