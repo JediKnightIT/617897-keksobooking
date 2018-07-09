@@ -45,8 +45,8 @@
     mapPins.appendChild(fragment);
   };
 
-  var onLoadSuccess = function () {
-    createMapPins();
+  var onLoadSuccess = function (data) {
+    createMapPins(window.filter.activate(data));
   };
 
   // Функция-обработчик, при возникновении ошибки загрузки данных с сервера
@@ -100,6 +100,7 @@
     window.form.disable();
     window.pins.disable();
     window.card.remove();
+    window.filter.disable();
     getPinMainInitialState();
   };
 
