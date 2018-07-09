@@ -27,6 +27,7 @@
   var guests = filter.querySelector('#housing-guests');
   var features = filter.querySelector('#housing-features');
   var checkedElement = features.querySelector('input:checked');
+  var filterElements = filter.querySelectorAll('select, input');
 
   var defaultData = [];
   var filteredData = [];
@@ -75,11 +76,45 @@
   };
 
   // Функция-обработчик, организующая работу фильтрации полей формы
-  var onFormInputChange = window.utils.debounce(function () {
+  var onFormElementChange = window.utils.debounce(function () {
     filterFormFields();
     window.card.remove();
     window.pins.disable();
     window.map.create(filteredData.slice(0, PIN_QUANTITY));
   });
 
+  // Функция, добавляющая элементам формы фильтра атрибут disabled и удаляющая событие change
+  var disableElements = function () {
+    filterElements.forEach(function (item) {
+      item.disabled = true;
+    });
+    filter.removeEventListener('change', onFormElementChange);
+  };
+
+  // Функция, удаляющая элементам формы фильтра атрибут disabled и добавляющее событие change
+  var activateElements = function () {
+    filterElements.forEach(function (item) {
+      item.disabled = false;
+    });
+    filter.addEventListener('change', onFormElementChange);
+  };
+
+  // Функция, активирующая фильтр
+  var activateFilter = function (data) {
+    defaultData = data.slice();
+    activateElements();
+    return defaultData.slice(0, PIN_QUANTITY);
+  };
+
+  // Функция, деактивирующая фильтр
+  var disableFilter = function () {
+    disableElements();
+    filter.reset();
+  };
+
+  // Создаём объект в глобальной ОВ
+  window.filter = {
+    activate: activateFilter,
+    disable: disableFilter
+  };
 })();
