@@ -1,8 +1,10 @@
 'use strict';
 
 (function () {
-  // Создаём переменную с кодом клавиши ESC
+  // Создаём константы
   var ESC_KEYCODE = 27;
+
+  var DEBOUNCE_INTERVAL = 500;
 
   // Создаём объект в глобальной ОВ
   window.utils = {
@@ -16,6 +18,20 @@
       while (element.firstChild) {
         element.removeChild(element.firstChild);
       }
+    },
+    // Функция, устранения 'дребезга' при фильтрации объявлений
+    debounce: function (fun) {
+      var lastTimeout = null;
+
+      return function () {
+        var args = arguments;
+        if (lastTimeout) {
+          window.clearTimeout(lastTimeout);
+        }
+        lastTimeout = window.setTimeout(function () {
+          fun.apply(null, args);
+        }, DEBOUNCE_INTERVAL);
+      };
     }
   };
 })();
