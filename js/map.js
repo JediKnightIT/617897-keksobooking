@@ -35,14 +35,18 @@
     });
   };
 
-  // Функция-обработчик, отрисовывающая DOM-элемент меток на карте
-  var onLoadSuccess = function (data) {
+  // Функция, отрисовывающая DOM-элемент меток на карте
+  var createMapPins = function (data) {
     var fragment = document.createDocumentFragment();
     data.forEach(function (item) {
       var pin = window.pins.create(item);
       fragment.appendChild(pin);
     });
     mapPins.appendChild(fragment);
+  };
+
+  var onLoadSuccess = function () {
+    createMapPins();
   };
 
   // Функция-обработчик, при возникновении ошибки загрузки данных с сервера
@@ -185,6 +189,7 @@
   initializePage();
 
   window.map = {
+    create: createMapPins,
     disablePageActiveState: disablePageActiveState
   };
 })();
