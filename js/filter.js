@@ -26,10 +26,42 @@
   var rooms = filter.querySelector('#housing-rooms');
   var guests = filter.querySelector('#housing-guests');
   var features = filter.querySelector('#housing-features');
+  var checkedElement = features.querySelector('input:checked');
+
+  var defaultData = [];
+  var filteredData = [];
 
   // Функция, фильтрующая элементы формы
   var selectFilterElement = function (element, value, item) {
     return element.value === 'any' ? true : element.value === item[value].toString();
+  };
+
+  // Функция, фильтрующая тип жилья
+  var selectFilterType = function (item) {
+    return selectFilterElement(type, 'type', item.offer);
+  };
+
+  // Функция, фильтрующая цену на жильё
+  var selectFilterPrice = function (item) {
+    var priceValue = priceRange[price.value];
+    return priceValue ? item.offer.price >= priceValue.MIN && item.offer.price <= priceValue.MAX : true;
+  };
+
+  // Функция, фильтрующая число комнат
+  var selectFilterRooms = function (item) {
+    return selectFilterElement(rooms, 'rooms', item.offer);
+  };
+
+  // Функция, фильтрующая число гостей
+  var selectFilterGuests = function (item) {
+    return selectFilterElement(guests, 'guests', item.offer);
+  };
+
+  // Функция, фильтрующая перечень удобств
+  var selectFilterFeatures = function (item) {
+    return Array.from(checkedElement).every(function (element) {
+      return item.offer.features.includes(element.value);
+    });
   };
 
 })();
