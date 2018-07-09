@@ -26,4 +26,10 @@
   var rooms = filter.querySelector('#housing-rooms');
   var guests = filter.querySelector('#housing-guests');
   var features = filter.querySelector('#housing-features');
+
+  // Функция, фильтрующая элементы формы
+  var selectFilterElement = function (element, value, item) {
+    return element.value === 'any' ? true : element.value === item[value].toString();
+  };
+
 })();
