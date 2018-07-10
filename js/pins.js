@@ -20,9 +20,16 @@
 
   // Функция, выделяющая активный пин
   var activatePin = function (element) {
-    window.pins.hide();
+    hidePinActive();
     pinActive = element;
     pinActive.classList.add('map__pin--active');
+  };
+
+  // Функция, снимающая выделение активного пина
+  var hidePinActive = function () {
+    if (pinActive) {
+      pinActive.classList.remove('map__pin--active');
+    }
   };
 
   // Создаём объект в глобальной ОВ
@@ -45,12 +52,7 @@
 
       return pinElement;
     },
-    // Функция, снимающая выделение активного пина
-    hide: function () {
-      if (pinActive) {
-        pinActive.classList.remove('map__pin--active');
-      }
-    },
+    hide: hidePinActive,
     // Функция, отключающая активное состояние карты с пинами
     disable: function () {
       mapPinsArray.forEach(function (item) {

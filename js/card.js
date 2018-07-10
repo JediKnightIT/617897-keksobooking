@@ -79,7 +79,7 @@
 
     // Добавляем обработчик события click
     cardClose.addEventListener('click', function () {
-      window.card.remove();
+      removeActiveElement();
     });
 
     // Добавляем обработчик события keydown
@@ -95,9 +95,16 @@
     }
   };
 
+  // Функция, скрывающая объявление о недвижимости, удаляющая выделение активного пина и удаляющая обработчик события по ESC
+  var removeActiveElement = function () {
+    hide();
+    window.pins.hide();
+    document.removeEventListener('keydown', onCardCloseEsc);
+  };
+
   // Функция-обработчик закрытия объявления при нажатии на ESC
   var onCardCloseEsc = function (evt) {
-    window.utils.pressEsc(evt, window.card.remove);
+    window.utils.pressEsc(evt, removeActiveElement);
   };
 
   // Создаём объект в глобальной ОВ
@@ -108,10 +115,6 @@
       cardActive = map.insertBefore(createCardElement(element), similarCardElement);
     },
     // Функция, скрывающая объявление о недвижимости, удаляющая выделение активного пина и удаляющая обработчик события по ESC
-    remove: function () {
-      hide();
-      window.pins.hide();
-      document.removeEventListener('keydown', onCardCloseEsc);
-    }
+    remove: removeActiveElement
   };
 })();
