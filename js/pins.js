@@ -1,13 +1,13 @@
 'use strict';
 
 (function () {
-  // Создаём объекты с данными
+  // Создаём структуру данных
   var pinSize = {
     WIDTH: 50,
     HEIGHT: 70
   };
 
-  var mapPins = [];
+  var mapPinsArray = [];
 
   var pinActive;
 
@@ -16,7 +16,7 @@
 
   var mapPinTemplate = template.content.querySelector('.map__pin');
 
-  var similarPinElement = document.querySelector('.map__pins');
+  var mapPins = document.querySelector('.map__pins');
 
   // Функция, выделяющая активный пин
   var activatePin = function (element) {
@@ -41,7 +41,7 @@
         activatePin(pinElement);
       });
 
-      mapPins.push(pinElement);
+      mapPinsArray.push(pinElement);
 
       return pinElement;
     },
@@ -53,10 +53,10 @@
     },
     // Функция, отключающая активное состояние карты с пинами
     disable: function () {
-      mapPins.forEach(function (item) {
-        similarPinElement.removeChild(item);
+      mapPinsArray.forEach(function (item) {
+        mapPins.removeChild(item);
       });
-      mapPins = [];
+      mapPinsArray = [];
     }
   };
 })();

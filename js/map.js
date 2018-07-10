@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-  // Создаём объекты с данными
+  // Создаём структуру данных
   var mainPinData = {
     sizes: {
       WIDTH: 65,
@@ -35,14 +35,19 @@
     });
   };
 
-  // Функция-обработчик, отрисовывающая DOM-элемент меток на карте
-  var onLoadSuccess = function (data) {
+  // Функция, отрисовывающая DOM-элемент меток на карте
+  var createMapPins = function (data) {
     var fragment = document.createDocumentFragment();
     data.forEach(function (item) {
       var pin = window.pins.create(item);
       fragment.appendChild(pin);
     });
     mapPins.appendChild(fragment);
+  };
+
+  // Функция-обработчик, отрисовывающая DOM-элемент меток на карте
+  var onLoadSuccess = function (data) {
+    createMapPins(window.filter.activate(data));
   };
 
   // Функция-обработчик, при возникновении ошибки загрузки данных с сервера
@@ -96,6 +101,7 @@
     window.form.disable();
     window.pins.disable();
     window.card.remove();
+    window.filter.disable();
     getPinMainInitialState();
   };
 
@@ -185,6 +191,7 @@
   initializePage();
 
   window.map = {
+    create: createMapPins,
     disablePageActiveState: disablePageActiveState
   };
 })();

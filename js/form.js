@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-  // Создаём словари
+  // Создаём структуру данных
   var realEstateTypeToMinPrice = {
     bungalo: 0,
     flat: 1000,
@@ -161,6 +161,7 @@
     window.backend.upload(onUploadSuccess, onUploadError, formData);
   };
 
+  // Добавляем сгруппированные событий
   var addFormListeners = function () {
     adType.addEventListener('change', onInputAdTypeChange);
     adTimeIn.addEventListener('change', onInputTimeInChange);
@@ -172,6 +173,7 @@
     adForm.addEventListener('submit', onFormSubmitClick);
   };
 
+  // Удаляем сгруппированные событий
   var removeFormListeners = function () {
     adType.removeEventListener('change', onInputAdTypeChange);
     adTimeIn.removeEventListener('change', onInputTimeInChange);
