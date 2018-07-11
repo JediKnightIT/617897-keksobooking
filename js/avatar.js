@@ -13,7 +13,19 @@
     var file = fileChooser.files[0];
     var fileName = file.name.toLowerCase();
 
+    // Проверяем тип загружаемого файла
+    var checkFileType = FILE_TYPES.some(function (it) {
+      return fileName.endsWith(it);
+    });
+
+    // Получакм исходный код загружаемого файла
     if (checkFileType) {
+      var fileReader = new FileReader();
+
+      fileReader.addEventListener('load', function () {
+        avatarPreview.src = fileReader.result;
+      });
+      fileReader.readAsDataURL(file);
     }
   });
 })();
