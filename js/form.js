@@ -161,7 +161,7 @@
     window.backend.upload(onUploadSuccess, onUploadError, formData);
   };
 
-  // Добавляем сгруппированные событий
+  // Добавляем сгруппированные события
   var addFormListeners = function () {
     adType.addEventListener('change', onInputAdTypeChange);
     adTimeIn.addEventListener('change', onInputTimeInChange);
@@ -174,7 +174,7 @@
     window.image.add();
   };
 
-  // Удаляем сгруппированные событий
+  // Удаляем сгруппированные события
   var removeFormListeners = function () {
     adType.removeEventListener('change', onInputAdTypeChange);
     adTimeIn.removeEventListener('change', onInputTimeInChange);

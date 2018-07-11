@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-  // Создаём объекты с данными
+  // Создаём структуру данных
   var UrlTypes = {
     LOAD: 'https://js.dump.academy/keksobooking/data',
     UPLOAD: 'https://js.dump.academy/keksobooking'
