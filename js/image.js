@@ -5,23 +5,39 @@
   var fileData = {
     WIDTH: '70',
     HEIGHT: '70',
-    PADDING: 'padding: 0;',
     BORDER: 'border-radius: 5px;',
     TYPES: ['gif', 'jpg', 'jpeg', 'png']
   };
 
+  var photos = [];
+
+  var DEFAULT_SRC = 'img/muffin-grey.svg';
+
   // Находим элементы в разметке и присваиваем их переменным
   var adForm = document.querySelector('.ad-form');
-  var previewContainer = adForm.querySelector('.ad-form-header__preview');
   var avatarPreview = adForm.querySelector('.ad-form-header__preview img');
   var avatar = adForm.querySelector('#avatar');
 
-  var loadAvatar = function (src) {
+  var photoPreviewContainer = adForm.querySelector('.ad-form__photo-container');
+  var photoPreview = adForm.querySelector('.ad-form__photo');
+  var photo = adForm.querySelector('#images');
+
+  // Функция, создающая параметры аватарке
+  var createAvatarInput = function (src) {
     avatarPreview.src = src;
-    avatarPreview.width = fileData.WIDTH;
-    avatarPreview.height = fileData.HEIGHT;
-    avatarPreview.style = fileData.BORDER;
-    previewContainer.style = fileData.PADDING;
+  };
+
+  // Функция, создающая DOM-элемент поля фотографии
+  var createPhotoInput = function (src) {
+    var photoCloneNode = photoPreview.cloneNode();
+    var image = document.createElement('img');
+    image.src = src;
+    image.width = fileData.WIDTH;
+    image.height = fileData.HEIGHT;
+    image.style = fileData.BORDER;
+    photos.push(image);
+    photoCloneNode.appendChild(image);
+    photoPreviewContainer.insertBefore(photoCloneNode, photoPreview);
   };
 
   // Функция, выполняющая загрузку файла
@@ -45,9 +61,12 @@
 
   // Функция-обработчик, загружающая аватарку пользователя
   var onInputAvatarChange = function (evt) {
-    fileLoad(evt.target, loadAvatar);
+    fileLoad(evt.target, createAvatarInput);
   };
 
-  // Добавляем обработчик события change
-  avatar.addEventListener('change', onInputAvatarChange);
+  // Функция-обработчик, загружающая фотографии недвижимости
+  var onInputPhotoChange = function (evt) {
+    fileLoad(evt.target, createPhotoInput);
+  };
+
 })();
