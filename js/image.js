@@ -2,50 +2,52 @@
 
 (function () {
   // Создаём структуру данных
-  var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
-
-  var imageData = {
+  var fileData = {
     WIDTH: '70',
     HEIGHT: '70',
     PADDING: 'padding: 0;',
-    BORDER: 'border-radius: 5px;'
+    BORDER: 'border-radius: 5px;',
+    TYPES: ['gif', 'jpg', 'jpeg', 'png']
   };
 
   // Находим элементы в разметке и присваиваем их переменным
   var adForm = document.querySelector('.ad-form');
-  var avatarPreviewContainer = adForm.querySelector('.ad-form-header__preview');
+  var previewContainer = adForm.querySelector('.ad-form-header__preview');
   var avatarPreview = adForm.querySelector('.ad-form-header__preview img');
   var avatar = adForm.querySelector('#avatar');
 
-  // Функция, загружающая аватарку с локальной диска
-  var loadAvatar = function () {
-    var file = avatar.files[0];
-    var fileName = file.name.toLowerCase();
+  var loadAvatar = function (src) {
+    avatarPreview.src = src;
+    avatarPreview.width = fileData.WIDTH;
+    avatarPreview.height = fileData.HEIGHT;
+    avatarPreview.style = fileData.BORDER;
+    previewContainer.style = fileData.PADDING;
+  };
 
-    // Проверяем тип загружаемого файла
-    var matches = FILE_TYPES.some(function (it) {
-      return fileName.endsWith(it);
-    });
+  // Функция, выполняющая загрузку файла
+  var fileLoad = function (evt, callback) {
+    if (evt.files) {
+      Array.from(evt.files).forEach(function (file) {
+        if (file.type.match('image')) {
+          var fileReader = new FileReader();
 
-    if (matches) {
-      var fileReader = new FileReader();
+          fileReader.addEventListener('load', function () {
+            callback(fileReader.result);
+          });
 
-      fileReader.addEventListener('load', function () {
-        avatarPreview.src = fileReader.result;
-        avatarPreview.width = imageData.WIDTH;
-        avatarPreview.height = imageData.HEIGHT;
-        avatarPreview.style = imageData.BORDER;
-        avatarPreviewContainer.style = imageData.PADDING;
+          fileReader.readAsDataURL(file);
+        } else {
+          evt.value = '';
+        }
       });
-      fileReader.readAsDataURL(file);
     }
   };
 
   // Функция-обработчик, загружающая аватарку пользователя
-  var onInputChange = function () {
-    loadAvatar();
+  var onInputAvatarChange = function (evt) {
+    fileLoad(evt.target, loadAvatar);
   };
 
   // Добавляем обработчик события change
-  avatar.addEventListener('change', onInputChange);
+  avatar.addEventListener('change', onInputAvatarChange);
 })();
