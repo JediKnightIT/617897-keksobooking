@@ -69,4 +69,25 @@
     fileLoad(evt.target, createPhotoInput);
   };
 
+  // Функция, сбрасывающая загруженные файлы
+  var resetInputFile = function () {
+    photos.forEach(function (item) {
+      item.parentElement.remove();
+    });
+    avatarPreview.src = DEFAULT_SRC;
+  };
+  // Создаём объект в глобальной ОВ
+  window.image = {
+    // Добавляем сгруппированные события
+    add: function () {
+      avatar.addEventListener('change', onInputAvatarChange);
+      photo.addEventListener('change', onInputPhotoChange);
+    },
+    // Удаляем сгруппированные события
+    remove: function () {
+      resetInputFile();
+      avatar.removeEventListener('change', onInputAvatarChange);
+      photo.removeEventListener('change', onInputPhotoChange);
+    }
+  };
 })();

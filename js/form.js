@@ -171,6 +171,7 @@
     adPrice.addEventListener('change', onInputFieldValidity);
     adForm.addEventListener('invalid', onInvalidForm, true);
     adForm.addEventListener('submit', onFormSubmitClick);
+    window.image.add();
   };
 
   // Удаляем сгруппированные событий
@@ -183,6 +184,7 @@
     adPrice.removeEventListener('change', onInputFieldValidity);
     adForm.removeEventListener('invalid', onInvalidForm, true);
     adForm.removeEventListener('submit', onFormSubmitClick);
+    window.image.remove();
   };
 
   // Создаём объект в глобальной ОВ
