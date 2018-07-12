@@ -2,6 +2,8 @@
 
 (function () {
   // Создаём структуру данных
+  var DEFAULT_SRC = 'img/muffin-grey.svg';
+
   var fileData = {
     WIDTH: '70',
     HEIGHT: '70',
@@ -10,8 +12,6 @@
   };
 
   var photos = [];
-
-  var DEFAULT_SRC = 'img/muffin-grey.svg';
 
   // Находим элементы в разметке и присваиваем их переменным
   var adForm = document.querySelector('.ad-form');
