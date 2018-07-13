@@ -1,22 +1,19 @@
 'use strict';
 
 (function () {
-  // Создаём структуру данных
+  // Находим элементы в разметке и присваиваем их переменным
+  var template = document.querySelector('template');
+  var mapPinTemplate = template.content.querySelector('.map__pin');
+  var mapPins = document.querySelector('.map__pins');
+
   var pinSize = {
     WIDTH: 50,
     HEIGHT: 70
   };
 
-  var mapPinsArray = [];
+  var pins = [];
 
   var pinActive;
-
-  // Находим элементы в разметке и присваиваем их переменным
-  var template = document.querySelector('template');
-
-  var mapPinTemplate = template.content.querySelector('.map__pin');
-
-  var mapPins = document.querySelector('.map__pins');
 
   // Функция, выделяющая активный пин
   var activatePin = function (element) {
@@ -48,17 +45,17 @@
         activatePin(pinElement);
       });
 
-      mapPinsArray.push(pinElement);
+      pins.push(pinElement);
 
       return pinElement;
     },
     hide: hidePinActive,
     // Функция, отключающая активное состояние карты с пинами
     disable: function () {
-      mapPinsArray.forEach(function (item) {
+      pins.forEach(function (item) {
         mapPins.removeChild(item);
       });
-      mapPinsArray = [];
+      pins = [];
     }
   };
 })();

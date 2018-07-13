@@ -1,7 +1,22 @@
 'use strict';
 
 (function () {
-  // Создаём структуру данных
+  // Находим элементы в разметке и присваиваем их переменным
+  var adForm = document.querySelector('.ad-form');
+  var disabledFieldset = document.querySelectorAll('fieldset');
+  var successMessage = document.querySelector('.success');
+  var adFormReset = document.querySelector('.ad-form__reset');
+
+  var adTitle = adForm.querySelector('#title');
+  var adType = adForm.querySelector('#type');
+  var adPrice = adForm.querySelector('#price');
+  var adTimeIn = adForm.querySelector('#timein');
+  var adTimeOut = adForm.querySelector('#timeout');
+  var adRoomNumber = adForm.querySelector('#room_number');
+  var adCapacity = adForm.querySelector('#capacity');
+  var adCapacityOption = adCapacity.querySelectorAll('option');
+  var inputAddress = adForm.querySelector('#address');
+
   var realEstateTypeToMinPrice = {
     bungalo: 0,
     flat: 1000,
@@ -17,31 +32,6 @@
   };
 
   var invalidFields = [];
-
-  // Находим элементы в разметке и присваиваем их переменным
-  var adForm = document.querySelector('.ad-form');
-
-  var disabledFieldset = document.querySelectorAll('fieldset');
-
-  var adTitle = adForm.querySelector('#title');
-
-  var adType = adForm.querySelector('#type');
-
-  var adPrice = adForm.querySelector('#price');
-
-  var adTimeIn = adForm.querySelector('#timein');
-
-  var adTimeOut = adForm.querySelector('#timeout');
-
-  var adRoomNumber = adForm.querySelector('#room_number');
-
-  var adCapacity = adForm.querySelector('#capacity');
-
-  var adCapacityOption = adCapacity.querySelectorAll('option');
-
-  var inputAddress = adForm.querySelector('#address');
-
-  var successMessage = document.querySelector('.success');
 
   // Добавляем тегам fieldset атрибут disabled
   var disableFieldsets = function (fieldset) {
@@ -123,6 +113,14 @@
     checkValidField(evt);
   };
 
+  var onResetButtonClick = function () {
+    invalidFields.forEach(function (field) {
+      field.parentNode.classList.remove('ad-form__element--invalid-field');
+    });
+    disableFieldsets(disabledFieldset);
+    window.map.disablePageActiveState();
+  };
+
   // Функция, закрывающая сообщение об успешной отправке формы
   var closeSuccessMessage = function () {
     successMessage.classList.add('hidden');
@@ -171,6 +169,7 @@
     adPrice.addEventListener('change', onInputFieldValidity);
     adForm.addEventListener('invalid', onInvalidForm, true);
     adForm.addEventListener('submit', onFormSubmitClick);
+    adFormReset.addEventListener('click', onResetButtonClick);
     window.image.add();
   };
 
@@ -184,6 +183,7 @@
     adPrice.removeEventListener('change', onInputFieldValidity);
     adForm.removeEventListener('invalid', onInvalidForm, true);
     adForm.removeEventListener('submit', onFormSubmitClick);
+    adFormReset.removeEventListener('click', onResetButtonClick);
     window.image.remove();
   };
 
@@ -197,17 +197,8 @@
     // Функция, отключающая активное состояние формы
     disable: function () {
       adForm.reset();
-
       adForm.classList.add('ad-form--disabled');
-
-      disableFieldsets(disabledFieldset);
-
       setPriceFromType();
-
-      invalidFields.forEach(function (field) {
-        field.parentNode.classList.remove('ad-form__element--invalid-field');
-      });
-
       removeFormListeners();
     },
     // Функция, записывающая координаты в поле ввода адреса

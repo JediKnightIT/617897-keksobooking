@@ -1,13 +1,11 @@
 'use strict';
 
 (function () {
-  // Создаём структуру данных
-  var translationRealEstateTypes = {
-    palace: 'Дворец',
-    flat: 'Квартира',
-    house: 'Дом',
-    bungalo: 'Бунгало'
-  };
+  // Находим элементы в разметке и присваиваем их переменным
+  var map = document.querySelector('.map');
+  var template = document.querySelector('template');
+  var cardTemplate = template.content.querySelector('.map__card');
+  var similarCardElement = document.querySelector('.map__filters-container');
 
   var photoElementData = {
     CLASS: 'popup__photo',
@@ -16,16 +14,14 @@
     ALT: 'Фотография жилья'
   };
 
+  var translationRealEstateTypes = {
+    palace: 'Дворец',
+    flat: 'Квартира',
+    house: 'Дом',
+    bungalo: 'Бунгало'
+  };
+
   var cardActive;
-
-  // Находим элементы в разметке и присваиваем их переменным
-  var map = document.querySelector('.map');
-
-  var template = document.querySelector('template');
-
-  var cardTemplate = template.content.querySelector('.map__card');
-
-  var similarCardElement = document.querySelector('.map__filters-container');
 
   // Функция, возвращающая новый DOM узел (элемент списка)
   var createFeatureElement = function (modifier) {

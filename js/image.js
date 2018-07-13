@@ -1,17 +1,7 @@
 'use strict';
 
 (function () {
-  // Создаём структуру данных
   var DEFAULT_SRC = 'img/muffin-grey.svg';
-
-  var fileData = {
-    WIDTH: '70',
-    HEIGHT: '70',
-    BORDER: 'border-radius: 5px;',
-    TYPES: ['gif', 'jpg', 'jpeg', 'png']
-  };
-
-  var photos = [];
 
   // Находим элементы в разметке и присваиваем их переменным
   var adForm = document.querySelector('.ad-form');
@@ -21,6 +11,15 @@
   var photoPreviewContainer = adForm.querySelector('.ad-form__photo-container');
   var photoPreview = adForm.querySelector('.ad-form__photo');
   var photo = adForm.querySelector('#images');
+
+  var fileData = {
+    WIDTH: '70',
+    HEIGHT: '70',
+    BORDER: 'border-radius: 5px;',
+    TYPES: ['gif', 'jpg', 'jpeg', 'png']
+  };
+
+  var photos = [];
 
   // Функция, создающая параметры аватарке
   var createAvatarInput = function (src) {
@@ -41,7 +40,7 @@
   };
 
   // Функция, выполняющая загрузку файла
-  var fileLoad = function (evt, callback) {
+  var loadFile = function (evt, callback) {
     if (evt.files) {
       Array.from(evt.files).forEach(function (file) {
         if (file.type.match('image')) {
@@ -61,12 +60,12 @@
 
   // Функция-обработчик, загружающая аватарку пользователя
   var onInputAvatarChange = function (evt) {
-    fileLoad(evt.target, createAvatarInput);
+    loadFile(evt.target, createAvatarInput);
   };
 
   // Функция-обработчик, загружающая фотографии недвижимости
   var onInputPhotoChange = function (evt) {
-    fileLoad(evt.target, createPhotoInput);
+    loadFile(evt.target, createPhotoInput);
   };
 
   // Функция, сбрасывающая загруженные файлы

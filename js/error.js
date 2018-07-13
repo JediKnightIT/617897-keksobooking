@@ -1,7 +1,6 @@
 'use strict';
 
 (function () {
-  // Создаём структуру данных
   var TIMEOUT = 5000;
 
   var node = document.createElement('div');

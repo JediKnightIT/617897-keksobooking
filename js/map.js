@@ -1,7 +1,12 @@
 'use strict';
 
 (function () {
-  // Создаём структуру данных
+  // Находим элементы в разметке и присваиваем их переменным
+  var map = document.querySelector('.map');
+  var disabledFieldset = document.querySelectorAll('fieldset');
+  var mapPins = map.querySelector('.map__pins');
+  var mapPinMain = map.querySelector('.map__pin--main');
+
   var mainPinData = {
     sizes: {
       WIDTH: 65,
@@ -16,17 +21,6 @@
       Y_MAX: 630
     }
   };
-
-  // Находим элементы в разметке и присваиваем их переменным
-  var map = document.querySelector('.map');
-
-  var disabledFieldset = document.querySelectorAll('fieldset');
-
-  var mapPins = map.querySelector('.map__pins');
-
-  var mapPinMain = map.querySelector('.map__pin--main');
-
-  var adFormReset = document.querySelector('.ad-form__reset');
 
   // Убираем у тегов fieldset атрибут disabled
   var activateFieldsets = function (fieldset) {
@@ -79,7 +73,7 @@
   // Функция, вычисляющая координаты главного пина
   var getCoordinates = function () {
     var pinMainCoordinates = {
-      x: mapPinMain.offsetLeft + mainPinData.sizes.WIDTH / 2,
+      x: Math.round(mapPinMain.offsetLeft + mainPinData.sizes.WIDTH / 2),
       y: mapPinMain.offsetTop + mainPinData.sizes.HEIGHT
     };
     return pinMainCoordinates;
@@ -104,12 +98,6 @@
     window.filter.disable();
     getPinMainInitialState();
   };
-
-  // Добавляем обработчик события click
-  adFormReset.addEventListener('click', function (evt) {
-    evt.preventDefault();
-    disablePageActiveState();
-  });
 
   // Функция, инициализирующая страницу
   var initializePage = function () {

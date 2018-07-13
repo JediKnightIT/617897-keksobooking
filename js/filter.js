@@ -1,7 +1,20 @@
 'use strict';
 
 (function () {
-  // Создаём структуру данных
+  var PIN_QUANTITY = 5;
+
+  // Находим элементы в разметке и присваиваем их переменным
+  var filter = document.querySelector('.map__filters');
+  var type = filter.querySelector('#housing-type');
+  var price = filter.querySelector('#housing-price');
+  var rooms = filter.querySelector('#housing-rooms');
+  var guests = filter.querySelector('#housing-guests');
+  var features = filter.querySelector('#housing-features');
+  var filterElements = filter.querySelectorAll('select, input');
+
+  var defaultData = [];
+  var filteredData = [];
+
   var priceRange = {
     low: {
       MIN: 0,
@@ -16,20 +29,6 @@
       MAX: Infinity
     }
   };
-
-  var PIN_QUANTITY = 5;
-
-  // Находим элементы в разметке и присваиваем их переменным
-  var filter = document.querySelector('.map__filters');
-  var type = filter.querySelector('#housing-type');
-  var price = filter.querySelector('#housing-price');
-  var rooms = filter.querySelector('#housing-rooms');
-  var guests = filter.querySelector('#housing-guests');
-  var features = filter.querySelector('#housing-features');
-  var filterElements = filter.querySelectorAll('select, input');
-
-  var defaultData = [];
-  var filteredData = [];
 
   // Функция, фильтрующая элементы формы
   var selectFilterElement = function (element, value, item) {

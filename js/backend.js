@@ -1,13 +1,12 @@
 'use strict';
 
 (function () {
-  // Создаём структуру данных
+  var SUCCESS_CODE = 200;
+
   var UrlTypes = {
     LOAD: 'https://js.dump.academy/keksobooking/data',
     UPLOAD: 'https://js.dump.academy/keksobooking'
   };
-
-  var SUCCESS_CODE = 200;
 
   // Функция, создающая запрос к серверу
   var createXHR = function (method, url, onLoad, onError, data) {
