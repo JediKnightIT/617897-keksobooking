@@ -29,33 +29,37 @@
     }
   };
 
+  // Функция, создающая DOM-элемент, соответствующиЙ меткам на карте
+  var createPin = function (element) {
+    var pin = mapPinTemplate.cloneNode(true);
+
+    pin.style = 'left: ' + (element.location.x - pinSize.WIDTH / 2) + 'px; top: ' + (element.location.y - pinSize.HEIGHT) + 'px';
+    pin.querySelector('img').src = element.author.avatar;
+    pin.querySelector('img').alt = element.offer.title;
+
+    // Добавляем обработчик события click
+    pin.addEventListener('click', function () {
+      window.card.show(element);
+      activatePin(pin);
+    });
+
+    pins.push(pin);
+
+    return pin;
+  };
+
+  // Функция, отключающая активное состояние карты с пинами
+  var disableActiveState = function () {
+    pins.forEach(function (item) {
+      mapPins.removeChild(item);
+    });
+    pins = [];
+  };
+
   // Создаём объект в глобальной ОВ
   window.pins = {
-    // Функция, создающая DOM-элемент, соответствующиЙ меткам на карте
-    create: function (pin) {
-      var pinElement = mapPinTemplate.cloneNode(true);
-
-      pinElement.style = 'left: ' + (pin.location.x - pinSize.WIDTH / 2) + 'px; top: ' + (pin.location.y - pinSize.HEIGHT) + 'px';
-      pinElement.querySelector('img').src = pin.author.avatar;
-      pinElement.querySelector('img').alt = pin.offer.title;
-
-      // Добавляем обработчик события click
-      pinElement.addEventListener('click', function () {
-        window.card.show(pin);
-        activatePin(pinElement);
-      });
-
-      pins.push(pinElement);
-
-      return pinElement;
-    },
+    create: createPin,
     hide: hidePinActive,
-    // Функция, отключающая активное состояние карты с пинами
-    disable: function () {
-      pins.forEach(function (item) {
-        mapPins.removeChild(item);
-      });
-      pins = [];
-    }
+    disable: disableActiveState
   };
 })();

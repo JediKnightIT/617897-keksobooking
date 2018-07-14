@@ -16,7 +16,8 @@
       X: 570,
       Y: 375
     },
-    verticalRange: {
+    limit: {
+      X_MIN: 0,
       Y_MIN: 130,
       Y_MAX: 630
     }
@@ -73,7 +74,7 @@
   // Функция, вычисляющая координаты главного пина
   var getCoordinates = function () {
     var pinMainCoordinates = {
-      x: Math.round(mapPinMain.offsetLeft + mainPinData.sizes.WIDTH / 2),
+      x: mapPinMain.offsetLeft + Math.round(mainPinData.sizes.WIDTH / 2),
       y: mapPinMain.offsetTop + mainPinData.sizes.HEIGHT
     };
     return pinMainCoordinates;
@@ -84,7 +85,7 @@
     mapPinMain.style.left = mainPinData.coordinates.X + 'px';
     mapPinMain.style.top = mainPinData.coordinates.Y + 'px';
 
-    window.form.setAddressField(getCoordinates());
+    window.form.setAddress(getCoordinates());
 
     mapPinMain.addEventListener('mousedown', onPinMainMouseDown);
   };
@@ -123,44 +124,30 @@
           y: startPosition.y - evtMove.clientY
         };
 
-        // Создаём объект для хранения отслеживаемых позиции при перемещении
-        var newPosition = {
-          x: mapPinMain.offsetLeft - currentPosition.x,
-          y: mapPinMain.offsetTop - currentPosition.y
-        };
-
-        // Создаём объект для хранения координат при минимальных ограничениях размещения пина
-        var minLimitCoordinates = {
-          x: -mapPinMain.clientWidth / 2,
-          y: mainPinData.verticalRange.Y_MIN - mainPinData.sizes.HEIGHT
-        };
-
-        // Создаём объект для хранения координат при максимальных ограничениях размещения пина
-        var maxLimitCoordinates = {
-          x: map.clientWidth - mapPinMain.clientWidth / 2,
-          y: mainPinData.verticalRange.Y_MAX - mainPinData.sizes.HEIGHT
-        };
-
-        // Создаём условия по размещению пина по горизонтали
-        if (newPosition.x < minLimitCoordinates.x || newPosition.x > maxLimitCoordinates.x) {
-          newPosition.x = mapPinMain.offsetLeft;
-        }
-
-        // Создаём условия по размещению пина по вертикали
-        if (newPosition.y < minLimitCoordinates.y || newPosition.y > maxLimitCoordinates.y) {
-          newPosition.y = mapPinMain.offsetTop;
-        }
-
         // Перезаписываем начальные координаты на текущие
         startPosition = {
           x: evtMove.clientX,
           y: evtMove.clientY
         };
 
-        mapPinMain.style.left = newPosition.x + 'px';
-        mapPinMain.style.top = newPosition.y + 'px';
+        var pinMainPosition = getCoordinates();
 
-        window.form.setAddressField(getCoordinates());
+        var newPosition = {
+          x: pinMainPosition.x - currentPosition.x,
+          y: pinMainPosition.y - currentPosition.y
+        };
+
+        // Создаём условия по размещению пина по горизонтали
+        if (newPosition.x >= mainPinData.limit.X_MIN && newPosition.x <= mapPins.offsetWidth) {
+          mapPinMain.style.left = (mapPinMain.offsetLeft - currentPosition.x) + 'px';
+        }
+
+        // Создаём условия по размещению пина по вертикали
+        if (newPosition.y >= mainPinData.limit.Y_MIN && newPosition.y <= mainPinData.limit.Y_MAX) {
+          mapPinMain.style.top = (mapPinMain.offsetTop - currentPosition.y) + 'px';
+        }
+
+        window.form.setAddress(getCoordinates());
       };
 
       // Функция-обработчик, прекращающая перемещение главного пина
@@ -178,6 +165,7 @@
 
   initializePage();
 
+  // Создаём объект в глобальной ОВ
   window.map = {
     create: createMapPins,
     disablePageActiveState: disablePageActiveState

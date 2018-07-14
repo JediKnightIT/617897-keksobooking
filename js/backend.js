@@ -9,7 +9,7 @@
   };
 
   // Функция, создающая запрос к серверу
-  var createXHR = function (method, url, onLoad, onError, data) {
+  var createXhr = function (method, url, onLoad, onError, data) {
     // Создаём новый объект XMLHttpRequest
     var xhr = new XMLHttpRequest();
     // Выполняем проверку метода, при помощи которого будет осуществляться запрос
@@ -38,13 +38,19 @@
     // Отправка данных
     xhr.send(data ? data : '');
   };
+
+  // Функция, получающая данные с сервера
+  var getData = function (onLoad, onError) {
+    createXhr('GET', UrlTypes.LOAD, onLoad, onError);
+  };
+
+  // Функция, отправляющая данные на сервер
+  var sendData = function (onLoad, onError, data) {
+    createXhr('POST', UrlTypes.UPLOAD, onLoad, onError, data);
+  };
   // Создаём объект в глобальной ОВ
   window.backend = {
-    load: function (onLoad, onError) {
-      createXHR('GET', UrlTypes.LOAD, onLoad, onError);
-    },
-    upload: function (onLoad, onError, data) {
-      createXHR('POST', UrlTypes.UPLOAD, onLoad, onError, data);
-    }
+    load: getData,
+    upload: sendData
   };
 })();

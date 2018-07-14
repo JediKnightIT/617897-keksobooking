@@ -117,7 +117,6 @@
     invalidFields.forEach(function (field) {
       field.parentNode.classList.remove('ad-form__element--invalid-field');
     });
-    disableFieldsets(disabledFieldset);
     window.map.disablePageActiveState();
   };
 
@@ -139,7 +138,7 @@
   };
 
   // Функция-обработчик, успешной отправки данных формы
-  var onUploadSuccess = function () {
+  var onSubmitUpload = function () {
     window.map.disablePageActiveState();
     successMessage.classList.remove('hidden');
     document.addEventListener('click', onSuccessWindowClick);
@@ -147,7 +146,7 @@
   };
 
   // Функция-обработчик, возникающая при ошибке отправки данных формы
-  var onUploadError = function (message) {
+  var onSubmitUploadError = function (message) {
     window.error.createMessage(message);
   };
 
@@ -156,7 +155,7 @@
     evt.preventDefault();
     // Создаём новый объект FormData
     var formData = new FormData(adForm);
-    window.backend.upload(onUploadSuccess, onUploadError, formData);
+    window.backend.upload(onSubmitUpload, onSubmitUploadError, formData);
   };
 
   // Добавляем сгруппированные события
@@ -187,23 +186,30 @@
     window.image.remove();
   };
 
+  // Функция, активирующая форму и проверяющая валидность полей формы
+  var activateForm = function () {
+    adForm.classList.remove('ad-form--disabled');
+    addFormListeners();
+  };
+
+  // Функция, отключающая активное состояние формы
+  var disableForm = function () {
+    adForm.reset();
+    adForm.classList.add('ad-form--disabled');
+    disableFieldsets(disabledFieldset);
+    setPriceFromType();
+    removeFormListeners();
+  };
+
+  // Функция, записывающая координаты в поле ввода адреса
+  var setAddressField = function (coordinates) {
+    inputAddress.value = coordinates.x + ', ' + coordinates.y;
+  };
+
   // Создаём объект в глобальной ОВ
   window.form = {
-    // Функция, активирующая форму и проверяющая валидность полей формы
-    activate: function () {
-      adForm.classList.remove('ad-form--disabled');
-      addFormListeners();
-    },
-    // Функция, отключающая активное состояние формы
-    disable: function () {
-      adForm.reset();
-      adForm.classList.add('ad-form--disabled');
-      setPriceFromType();
-      removeFormListeners();
-    },
-    // Функция, записывающая координаты в поле ввода адреса
-    setAddressField: function (coordinates) {
-      inputAddress.value = coordinates.x + ', ' + coordinates.y;
-    }
+    activate: activateForm,
+    disable: disableForm,
+    setAddress: setAddressField
   };
 })();

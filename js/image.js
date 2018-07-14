@@ -75,18 +75,23 @@
     });
     avatarPreview.src = DEFAULT_SRC;
   };
+
+  // Добавляем сгруппированные события
+  var add = function () {
+    avatar.addEventListener('change', onInputAvatarChange);
+    photo.addEventListener('change', onInputPhotoChange);
+  };
+
+  // Удаляем сгруппированные события
+  var remove = function () {
+    resetInputFile();
+    avatar.removeEventListener('change', onInputAvatarChange);
+    photo.removeEventListener('change', onInputPhotoChange);
+  };
+
   // Создаём объект в глобальной ОВ
   window.image = {
-    // Добавляем сгруппированные события
-    add: function () {
-      avatar.addEventListener('change', onInputAvatarChange);
-      photo.addEventListener('change', onInputPhotoChange);
-    },
-    // Удаляем сгруппированные события
-    remove: function () {
-      resetInputFile();
-      avatar.removeEventListener('change', onInputAvatarChange);
-      photo.removeEventListener('change', onInputPhotoChange);
-    }
+    add: add,
+    remove: remove
   };
 })();

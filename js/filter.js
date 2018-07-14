@@ -10,7 +10,7 @@
   var rooms = filter.querySelector('#housing-rooms');
   var guests = filter.querySelector('#housing-guests');
   var features = filter.querySelector('#housing-features');
-  var filterElements = filter.querySelectorAll('select, input');
+  var filterFields = filter.querySelectorAll('select, input');
 
   var defaultData = [];
   var filteredData = [];
@@ -58,9 +58,9 @@
 
   // Функция, фильтрующая перечень удобств
   var selectFilterFeatures = function (item) {
-    var checkedElement = features.querySelectorAll('input:checked');
+    var checkedFeatures = features.querySelectorAll('input:checked');
 
-    return Array.from(checkedElement).every(function (element) {
+    return Array.from(checkedFeatures).every(function (element) {
       return item.offer.features.includes(element.value);
     });
   };
@@ -85,7 +85,7 @@
 
   // Функция, добавляющая элементам формы фильтра атрибут disabled и удаляющая событие change
   var disableElements = function () {
-    filterElements.forEach(function (item) {
+    filterFields.forEach(function (item) {
       item.disabled = true;
     });
     filter.removeEventListener('change', onFormElementChange);
@@ -93,7 +93,7 @@
 
   // Функция, удаляющая элементам формы фильтра атрибут disabled и добавляющее событие change
   var activateElements = function () {
-    filterElements.forEach(function (item) {
+    filterFields.forEach(function (item) {
       item.disabled = false;
     });
     filter.addEventListener('change', onFormElementChange);
