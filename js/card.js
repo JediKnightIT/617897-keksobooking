@@ -57,7 +57,7 @@
     card.querySelector('.popup__text--time').textContent = 'Заезд после ' + element.offer.checkin + ', выезд до ' + element.offer.checkout;
 
     var featureParent = card.querySelector('.popup__features');
-    window.utils.remove(featureParent);
+    window.utils.removeChildElements(featureParent);
 
     element.offer.features.forEach(function (item) {
       featureParent.appendChild(createFeatureElement(item));
@@ -66,7 +66,7 @@
     card.querySelector('.popup__description').textContent = element.offer.description;
 
     var photoParent = card.querySelector('.popup__photos');
-    window.utils.remove(photoParent);
+    window.utils.removeChildElements(photoParent);
 
     element.offer.photos.forEach(function (item) {
       photoParent.appendChild(createPhotoElement(item));
@@ -101,7 +101,7 @@
 
   // Функция-обработчик закрытия объявления при нажатии на ESC
   var onCardCloseEsc = function (evt) {
-    window.utils.pressEsc(evt, removeActiveElement);
+    window.utils.isEscPress(evt, removeActiveElement);
   };
 
   // Функция, вызывающая показ объявления о недвижимости

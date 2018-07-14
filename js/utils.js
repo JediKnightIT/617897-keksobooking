@@ -5,7 +5,7 @@
 
   var DEBOUNCE_INTERVAL = 500;
 
-  var pressEsc = function (evt, callback) {
+  var isEscPress = function (evt, callback) {
     if (evt.keyCode === ESC_KEYCODE) {
       callback();
     }
@@ -34,8 +34,8 @@
 
   // Создаём объект в глобальной ОВ
   window.utils = {
-    pressEsc: pressEsc,
-    remove: removeChildElements,
+    isEscPress: isEscPress,
+    removeChildElements: removeChildElements,
     debounce: debounce
   };
 })();
