@@ -198,6 +198,7 @@
     adForm.classList.add('ad-form--disabled');
     disableFieldsets(disabledFieldset);
     setPriceFromType();
+    getNumberGuests();
     removeFormListeners();
   };
 
