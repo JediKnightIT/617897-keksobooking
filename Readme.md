@@ -4,7 +4,6 @@
 * Наставник: [Олег Петров](https://htmlacademy.ru/profile/fyvfyv).
 
 ---
----
 
 ## Особенности проекта
 
